@@ -52,3 +52,58 @@ El objetivo de hoy es añadir **persistencia en ficheros binarios** usando `pick
 # MODO TUTOR
 
 Muestra el adaptador binario de la entidad principal. Pide al alumno que implemente el de otra entidad y que escriba el test antes de mostrar la solución.
+
+---
+
+# ✅ DEFINITION OF DONE (DoD)
+
+## Quality gates generales (aplican en todas las sesiones)
+- [ ] `python -m pytest -q` → 0 fallos, 0 errores
+- [ ] `python main.py` arranca sin errores
+- [ ] No hay imports de `entities/` en `ui/`: `grep -r "from entities" ui/` → vacío
+- [ ] Commits del día con patrón `sesion11: descripción corta`
+
+## Quality gates específicos de esta sesión
+- [ ] Adaptadores binarios con la misma interfaz (`guardar` / `cargar`) que los de texto — son intercambiables
+- [ ] `# WARNING` presente antes de `pickle.load` en todos los adaptadores binarios
+- [ ] Tests con `tmp_path` pasan para los adaptadores binarios
+- [ ] `main.py` tiene una constante o flag para elegir entre formato JSON y Pickle
+- [ ] Las entidades se serializan/deserializan correctamente sin modificar su código
+
+---
+
+# 📓 JOURNAL DE SESIÓN
+
+Al terminar, crea o actualiza `journal/sesion11.md` y haz commit:
+
+```markdown
+# Journal — Sesión 11 — [fecha]
+
+## Integrantes
+-
+-
+
+## ¿Qué hemos hecho hoy?
+
+
+## Adaptadores binarios creados
+<!-- Lista: entidad → fichero del adaptador binario -->
+
+## Comparativa JSON vs Pickle en vuestro proyecto
+<!-- ¿Cuál usaríais en producción y por qué? -->
+
+## Problemas encontrados y cómo los resolvimos
+
+
+## ¿Qué queda pendiente para la próxima sesión?
+
+
+## Tiempo invertido
+- Horas de trabajo en equipo:
+```
+
+```bash
+git add journal/sesion11.md
+git commit -m "sesion11: journal de sesión"
+git push origin sesion11-ficheros-binarios
+```

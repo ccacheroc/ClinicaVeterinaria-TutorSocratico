@@ -40,3 +40,58 @@ El objetivo de hoy es añadir **manejo de excepciones** propio del dominio.
 # MODO TUTOR
 
 Muestra cómo crear `AppError` y la primera excepción específica. Pide al alumno que añada la validación en `__init__` de la entidad principal antes de mostrar la solución.
+
+---
+
+# ✅ DEFINITION OF DONE (DoD)
+
+## Quality gates generales (aplican en todas las sesiones)
+- [ ] `python -m pytest -q` → 0 fallos, 0 errores
+- [ ] `python main.py` arranca sin errores
+- [ ] No hay imports de `entities/` en `ui/`: `grep -r "from entities" ui/` → vacío
+- [ ] Commits del día con patrón `sesion09: descripción corta`
+
+## Quality gates específicos de esta sesión
+- [ ] `entities/excepciones.py` existe con jerarquía propia (`AppError` como base)
+- [ ] Las excepciones propias heredan de `AppError`, no directamente de `Exception`
+- [ ] Tests que verifican `pytest.raises(ExcepcionPropia)` al construir con datos inválidos
+- [ ] `ui/` captura excepciones y muestra mensaje sin stack trace (no `traceback` visible al usuario)
+- [ ] El criterio excepción vs `Resultado` es coherente y consistente en todo el código
+
+---
+
+# 📓 JOURNAL DE SESIÓN
+
+Al terminar, crea o actualiza `journal/sesion09.md` y haz commit:
+
+```markdown
+# Journal — Sesión 09 — [fecha]
+
+## Integrantes
+-
+-
+
+## ¿Qué hemos hecho hoy?
+
+
+## Jerarquía de excepciones creada
+<!-- Lista las excepciones y cuándo se lanzan -->
+
+## Casos que usan excepción vs Resultado
+<!-- Documenta los casos límite y la decisión tomada -->
+
+## Problemas encontrados y cómo los resolvimos
+
+
+## ¿Qué queda pendiente para la próxima sesión?
+
+
+## Tiempo invertido
+- Horas de trabajo en equipo:
+```
+
+```bash
+git add journal/sesion09.md
+git commit -m "sesion09: journal de sesión"
+git push origin sesion09-excepciones
+```

@@ -30,3 +30,61 @@ El objetivo de hoy es diseñar el diagrama de clases inicial de nuestra app y cr
 # MODO TUTOR
 
 Propón la primera clase principal con sus atributos. Luego pide al alumno que implemente las demás antes de mostrar la solución.
+
+---
+
+# ✅ DEFINITION OF DONE (DoD)
+
+Antes de cerrar la sesión, verifica que se cumplen **todos** los criterios:
+
+## Quality gates generales (aplican en todas las sesiones)
+- [ ] `python -m pytest -q` → 0 fallos, 0 errores
+- [ ] `python main.py` arranca sin errores
+- [ ] No hay imports de `entities/` en `ui/`: `grep -r "from entities" ui/` → vacío
+- [ ] Commits del día con patrón `sesion02: descripción corta`
+
+## Quality gates específicos de esta sesión
+- [ ] Al menos 3 clases de dominio creadas en `entities/`
+- [ ] Todos los atributos de instancia son `self.__privado` (doble guion)
+- [ ] `entities/resultado.py` existe con `Resultado.exito` y `Resultado.error`
+- [ ] `__str__` implementado en todas las clases nuevas
+- [ ] Tests de construcción pasan (objetos se crean correctamente)
+- [ ] Diagrama de clases actualizado en `README.md`
+
+---
+
+# 📓 JOURNAL DE SESIÓN
+
+Al terminar, crea o actualiza `journal/sesion02.md` y haz commit:
+
+```markdown
+# Journal — Sesión 02 — [fecha]
+
+## Integrantes
+-
+-
+
+## ¿Qué hemos hecho hoy?
+
+
+## Clases identificadas y atributos principales
+<!-- Lista las clases creadas y sus atributos más relevantes -->
+
+## Decisiones de diseño tomadas (y por qué)
+<!-- Ej: decidimos que X es privado porque modificarlo directamente rompería... -->
+
+## Problemas encontrados y cómo los resolvimos
+
+
+## ¿Qué queda pendiente para la próxima sesión?
+
+
+## Tiempo invertido
+- Horas de trabajo en equipo:
+```
+
+```bash
+git add journal/sesion02.md
+git commit -m "sesion02: journal de sesión"
+git push origin sesion02-clases-esqueleto
+```

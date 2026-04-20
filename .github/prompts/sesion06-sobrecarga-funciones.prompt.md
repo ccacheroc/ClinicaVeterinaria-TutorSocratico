@@ -25,3 +25,58 @@ El objetivo de hoy es implementar la **sobrecarga de funciones built-in** de Pyt
 # MODO TUTOR
 
 Muestra el `__str__` de la clase principal como ejemplo. Pide al alumno que implemente `__repr__` y `__bool__` antes de revelar la solución.
+
+---
+
+# ✅ DEFINITION OF DONE (DoD)
+
+## Quality gates generales (aplican en todas las sesiones)
+- [ ] `python -m pytest -q` → 0 fallos, 0 errores
+- [ ] `python main.py` arranca sin errores
+- [ ] No hay imports de `entities/` en `ui/`: `grep -r "from entities" ui/` → vacío
+- [ ] Commits del día con patrón `sesion06: descripción corta`
+
+## Quality gates específicos de esta sesión
+- [ ] `__str__` implementado en todas las entidades — la salida es legible para el usuario
+- [ ] `__repr__` implementado en todas las entidades — incluye clase y atributos clave
+- [ ] `__bool__` implementado donde aplique con semántica clara
+- [ ] `ui/` usa `str(objeto)` y no accede a propiedades internas para mostrar datos: `grep -rn "\.__" ui/`
+- [ ] Tests de `__str__`, `__repr__` y `__bool__` pasan
+
+---
+
+# 📓 JOURNAL DE SESIÓN
+
+Al terminar, crea o actualiza `journal/sesion06.md` y haz commit:
+
+```markdown
+# Journal — Sesión 06 — [fecha]
+
+## Integrantes
+-
+-
+
+## ¿Qué hemos hecho hoy?
+
+
+## Dunders implementados por clase
+<!-- Lista: clase → __str__ / __repr__ / __len__ / __bool__ -->
+
+## Decisiones de diseño tomadas (y por qué)
+<!-- Ej: __bool__ de Resultado devuelve self.ok porque es la semántica más natural -->
+
+## Problemas encontrados y cómo los resolvimos
+
+
+## ¿Qué queda pendiente para la próxima sesión?
+
+
+## Tiempo invertido
+- Horas de trabajo en equipo:
+```
+
+```bash
+git add journal/sesion06.md
+git commit -m "sesion06: journal de sesión"
+git push origin sesion06-sobrecarga-funciones
+```

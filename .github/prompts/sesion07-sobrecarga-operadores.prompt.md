@@ -27,3 +27,59 @@ El objetivo de hoy es implementar la **sobrecarga de operadores**.
 # MODO TUTOR
 
 Muestra `__eq__` y `__hash__` de la entidad principal. Luego pide al alumno que implemente `__add__` de la clase contenedora antes de mostrar la solución.
+
+---
+
+# ✅ DEFINITION OF DONE (DoD)
+
+## Quality gates generales (aplican en todas las sesiones)
+- [ ] `python -m pytest -q` → 0 fallos, 0 errores
+- [ ] `python main.py` arranca sin errores
+- [ ] No hay imports de `entities/` en `ui/`: `grep -r "from entities" ui/` → vacío
+- [ ] Commits del día con patrón `sesion07: descripción corta`
+
+## Quality gates específicos de esta sesión
+- [ ] `__eq__` siempre acompañado de `__hash__` — la entidad puede usarse en `set` o como clave de `dict`
+- [ ] `entidad1 == entidad2` compara por identidad de dominio (id único), no por referencia de memoria
+- [ ] Operadores `+`/`-` devuelven nueva instancia; `+=`/`-=` devuelven `self`
+- [ ] `elemento in coleccion` funciona correctamente (`__contains__`)
+- [ ] `coleccion[clave]` funciona por índice y por identificador (`__getitem__`)
+- [ ] Tests para cada operador: creación, igualdad, colecciones, acceso por índice
+
+---
+
+# 📓 JOURNAL DE SESIÓN
+
+Al terminar, crea o actualiza `journal/sesion07.md` y haz commit:
+
+```markdown
+# Journal — Sesión 07 — [fecha]
+
+## Integrantes
+-
+-
+
+## ¿Qué hemos hecho hoy?
+
+
+## Operadores implementados por clase
+<!-- Lista: clase → __eq__, __add__, __getitem__, etc. -->
+
+## Decisiones de diseño tomadas (y por qué)
+<!-- Ej: __add__ crea nueva instancia porque la clase contenedora es inmutable en ese contexto -->
+
+## Problemas encontrados y cómo los resolvimos
+
+
+## ¿Qué queda pendiente para la próxima sesión?
+
+
+## Tiempo invertido
+- Horas de trabajo en equipo:
+```
+
+```bash
+git add journal/sesion07.md
+git commit -m "sesion07: journal de sesión"
+git push origin sesion07-sobrecarga-operadores
+```

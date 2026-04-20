@@ -25,3 +25,59 @@ El objetivo de hoy es enriquecer el diseño con **propiedades (`@property`)**, *
 # MODO TUTOR
 
 Muestra cómo declarar la clase base como abstracta. Luego pide al alumno que identifique qué `@property` son necesarias antes de implementarlas.
+
+---
+
+# ✅ DEFINITION OF DONE (DoD)
+
+## Quality gates generales (aplican en todas las sesiones)
+- [ ] `python -m pytest -q` → 0 fallos, 0 errores
+- [ ] `python main.py` arranca sin errores
+- [ ] No hay imports de `entities/` en `ui/`: `grep -r "from entities" ui/` → vacío
+- [ ] Commits del día con patrón `sesion05: descripción corta`
+
+## Quality gates específicos de esta sesión
+- [ ] La clase base tiene `ABC` e `@abstractmethod` — `pytest.raises(TypeError)` al instanciarla directamente
+- [ ] Todas las propiedades observables tienen `@property` de lectura sin setter (salvo validación justificada)
+- [ ] Ningún setter añadido sin lógica de validación real
+- [ ] Si hay herencia múltiple, el MRO está documentado con comentario en la clase
+- [ ] `services/` sigue sin importar `entities/` directamente en tests de UI
+- [ ] Diagrama de clases actualizado con `<<abstract>>` y propiedades `+`
+
+---
+
+# 📓 JOURNAL DE SESIÓN
+
+Al terminar, crea o actualiza `journal/sesion05.md` y haz commit:
+
+```markdown
+# Journal — Sesión 05 — [fecha]
+
+## Integrantes
+-
+-
+
+## ¿Qué hemos hecho hoy?
+
+
+## Properties añadidas y justificación
+<!-- Lista: atributo → @property de lectura / setter / ninguna — y por qué -->
+
+## Decisiones sobre herencia múltiple o clases abstractas
+<!-- ¿Había candidatos? ¿Qué decidisteis y por qué? -->
+
+## Problemas encontrados y cómo los resolvimos
+
+
+## ¿Qué queda pendiente para la próxima sesión?
+
+
+## Tiempo invertido
+- Horas de trabajo en equipo:
+```
+
+```bash
+git add journal/sesion05.md
+git commit -m "sesion05: journal de sesión"
+git push origin sesion05-propiedades
+```

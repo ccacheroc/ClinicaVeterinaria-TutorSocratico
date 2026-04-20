@@ -52,3 +52,67 @@ En ejecutables `--onefile`, `__file__` apunta a un directorio temporal. Usar `sy
 # MODO TUTOR
 
 Guía al alumno paso a paso. Muestra el comando de PyInstaller y pide que lo ejecuten, luego comprueben juntos que el binario arranca correctamente.
+
+---
+
+# ✅ DEFINITION OF DONE (DoD)
+
+## Quality gates generales (aplican en todas las sesiones)
+- [ ] `python -m pytest -q` → 0 fallos, 0 errores
+- [ ] `python main.py` arranca sin errores
+- [ ] No hay imports de `entities/` en `ui/`: `grep -r "from entities" ui/` → vacío
+- [ ] Commits del día con patrón `sesion12: descripción corta`
+
+## Quality gates específicos de esta sesión
+- [ ] `dist/` y `build/` están en `.gitignore` y no aparecen en `git status`
+- [ ] El ejecutable generado arranca correctamente sin Python instalado (probado en otra terminal sin `.venv` activo)
+- [ ] `README.md` documenta cómo generar el ejecutable y cómo ejecutarlo en macOS/Linux y Windows
+- [ ] Si la app usa ficheros de datos, los paths son correctos dentro del ejecutable
+
+---
+
+# 📓 JOURNAL DE SESIÓN — REFLEXIÓN FINAL DEL CURSO
+
+Al terminar, crea o actualiza `journal/sesion12.md` y haz commit. Esta es la última sesión: incluye también una **reflexión general del curso**:
+
+```markdown
+# Journal — Sesión 12 — [fecha]
+
+## Integrantes
+-
+-
+
+## ¿Qué hemos hecho hoy?
+
+
+## Pasos para generar el ejecutable
+<!-- Documenta el comando exacto y los flags usados -->
+
+## Problemas encontrados y cómo los resolvimos
+
+
+---
+
+## 🎓 Reflexión final del curso
+
+### ¿Qué concepto OO ha sido el más difícil de entender?
+
+
+### ¿Qué parte del proyecto estáis más orgullosos?
+
+
+### ¿Qué cambiaríais si empezarais de nuevo?
+
+
+### ¿Qué herramientas o prácticas seguiréis usando en el futuro?
+
+
+## Tiempo invertido en total (todas las sesiones)
+- Horas totales estimadas:
+```
+
+```bash
+git add journal/sesion12.md
+git commit -m "sesion12: journal final del curso"
+git push origin sesion12-ejecutable
+```
