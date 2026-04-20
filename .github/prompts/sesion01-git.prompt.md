@@ -44,8 +44,14 @@ git config --global --list
 - Si sois los **primeros de vuestro equipo** en acceder: crear un grupo nuevo con el nombre acordado (ej. `equipo-01`).
 - Si vuestro compañero ya ha creado el grupo: buscadlo en la lista y uníos a él.
 
-> GitHub Classroom creará automáticamente un repositorio privado para el grupo
+> GitHub Classroom creará automáticamente un repositorio **privado** para el grupo
 > con la plantilla base de la asignatura.
+
+> 📢 **Revisión por pares**: el día de la revisión por pares deberéis cambiar la visibilidad
+> del repositorio a **público** para que vuestros compañeros puedan acceder al código.
+> `github.com → [repo] → Settings → Danger Zone → Change repository visibility → Public`
+> Recordad volver a **privado** después si lo deseáis.
+
 
 ## 4. Generar un token de acceso personal (PAT)
 
@@ -71,7 +77,7 @@ git clone https://github.com/<organización>/<nombre-repo-grupo>.git
 cd <nombre-repo-grupo>
 ```
 
-## 6. Crear el entorno virtual de Python
+## 6. Crear, si aún no lo habíais creado, el entorno virtual de Python
 
 ```bash
 python3 -m venv .venv
@@ -104,7 +110,7 @@ build/
 *.egg-info/
 ```
 
-## 8. Hacer el primer commit en equipo
+## 8. Primer miembro del equipo: hacer el primer commit en equipo
 
 ```bash
 git add .gitignore
@@ -160,6 +166,7 @@ Antes de cerrar la sesión, verifica que se cumplen **todos** los criterios:
 - [ ] `.gitignore` existe en la raíz y excluye `.venv/`, `.idea/` y `__pycache__/`
 - [ ] `git log --oneline` muestra al menos 1 commit de cada miembro
 - [ ] `git status` muestra `nothing to commit, working tree clean` al final
+- [ ] ⏰ **Pendiente para el día de revisión por pares**: cambiar visibilidad del repo a público en `Settings → Danger Zone`
 
 ---
 
