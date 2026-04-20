@@ -110,11 +110,35 @@ build/
 *.egg-info/
 ```
 
-## 8. Primer miembro del equipo: hacer el primer commit en equipo
+## 8. Crear la estructura inicial del proyecto
+
+Crear la carpeta `src/` con un fichero `main.py` mínimo:
 
 ```bash
-git add .gitignore
-git commit -m "sesion01: añadir .gitignore"
+mkdir src
+```
+
+Contenido de `src/main.py`:
+
+```python
+def main() -> None:
+    print("¡Hola, mundo!")
+
+if __name__ == "__main__":
+    main()
+```
+
+Verificar que funciona:
+
+```bash
+python src/main.py
+```
+
+## 9. Primer miembro del equipo: hacer el primer commit
+
+```bash
+git add .gitignore src/main.py
+git commit -m "sesion01: añadir .gitignore y estructura inicial del proyecto"
 git push origin main
 ```
 
@@ -164,6 +188,7 @@ Antes de cerrar la sesión, verifica que se cumplen **todos** los criterios:
 - [ ] El repositorio del grupo es visible en la organización de GitHub Classroom
 - [ ] Ambos miembros aparecen como colaboradores del repositorio
 - [ ] `.gitignore` existe en la raíz y excluye `.venv/`, `.idea/` y `__pycache__/`
+- [ ] `src/main.py` existe y `python src/main.py` imprime `¡Hola, mundo!`
 - [ ] `git log --oneline` muestra al menos 1 commit de cada miembro
 - [ ] `git status` muestra `nothing to commit, working tree clean` al final
 - [ ] ⏰ **Pendiente para el día de revisión por pares**: cambiar visibilidad del repo a público en `Settings → Danger Zone`
