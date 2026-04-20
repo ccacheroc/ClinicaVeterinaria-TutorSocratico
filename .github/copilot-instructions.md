@@ -25,6 +25,9 @@ ui  →  services  →  entities  →  (persistence)
 - Al terminar cada sesión: `git push origin main`.
 - Mensaje de commit: `"sesionXX: descripción corta en español"`.
 
+> Flujo completo, coordinación entre miembros y resolución de conflictos en
+> `instructions/gitflow.instructions.md` (se activa automáticamente en todo el proyecto).
+
 ---
 
 ## Reglas que NUNCA deben violarse
@@ -43,6 +46,7 @@ ui  →  services  →  entities  →  (persistence)
 
 | Fichero | Se activa | Contenido |
 |---|---|---|
+| `instructions/gitflow.instructions.md` | `**/*` (auto) | Flujo Git sobre main, ciclo commit, coordinación en equipo, conflictos |
 | `instructions/architecture.instructions.md` | `**/*.py` (auto) | Capas, dependencias, checklist de nueva funcionalidad |
 | `instructions/python-conventions.instructions.md` | `**/*.py` (auto) | Type hints, nomenclatura, docstrings, imports |
 | `instructions/entities.instructions.md` | `entities/**/*.py` (auto) | Reglas de dominio, visibilidad, `@property`, setters |
