@@ -245,7 +245,7 @@ Asegurarse de que todos los paquetes tienen su `__init__.py`.
 
 > ⚠️ Los alumnos **no escriben los tests** en esta sesión. El agente aplica TDD de forma
 > autónoma como salvaguarda de calidad. Los alumnos observan y entienden el resultado,
-> pero no se espera que sepan escribirlos todavía (eso se trabaja a partir de sesiones posteriores).
+> pero no se espera que sepan escribirlos en esta asignatura.
 
 ## Paso 4.1 — El agente escribe los tests de construcción de todas las clases
 
@@ -272,58 +272,120 @@ El alumno solo necesita ver que todos los tests pasan en verde.
 
 ---
 
-# FASE 5 — ESQUELETOS DE SERVICIOS Y `main.py` (socrático)
+# FASE 5 — SERVICIOS DE CREACIÓN Y `main.py` (responsabilidad exclusiva del agente)
 
-## Paso 5.1 — Preguntar qué operaciones principales necesita el sistema
+> ⚠️ En esta sesión las entidades **no tienen métodos de negocio** todavía — solo `__init__`.
+> Por tanto, los servicios únicamente pueden **crear objetos** y guardarlos.
+> Los métodos de negocio de los servicios se añadirán en la Sesión 3, cuando las entidades tengan operaciones propias.
+> El agente genera **todos** los servicios directamente; el alumno no los escribe.
 
-> *"Pensad en las operaciones principales que un usuario querría hacer con vuestro sistema.
-> Por ejemplo: dar de alta, listar, buscar, eliminar... ¿Cuáles son las más importantes?"*
+## Paso 5.1 — El agente explica por qué existen los servicios
 
-## Paso 5.2 — El agente crea el esqueleto de un servicio como ejemplo
+Antes de crear nada, el agente da esta explicación al alumno:
 
-Crear **un servicio** (el más representativo) en `src/services/` con:
-- Método(s) esqueleto que devuelvan `Resultado` (ya creado en Fase 3).
-- Inyección de dependencias en `__init__`.
-- Sin lógica de negocio todavía — solo `return Resultado.exito("TODO")`.
+> *"Tenemos las entidades listas. La pregunta es: ¿por qué no llamamos directamente a
+> `MiClase(...)` desde `main.py`?*
+>
+> *Imagina que el `main` hace:*
+> ```python
+> producto = Producto("Manzana", 1.20, 50)
+> almacen.append(producto)
+> ```
+> *Esto funciona hoy. Pero mañana necesitamos:*
+> *— validar que el stock no sea negativo,*
+> *— comprobar que no existe ya un producto con el mismo nombre,*
+> *— registrar en un log cada alta,*
+> *— notificar a otro sistema...*
+>
+> *Si esa lógica vive en `main`, o en la UI, o repartida por todos lados, se vuelve
+> imposible de mantener y de probar.*
+>
+> *El **servicio** es la única capa que tiene permiso para orquestar entidades.
+> Centraliza las reglas de negocio que van más allá de una sola entidad.
+> La UI solo llama al servicio y muestra el resultado — no sabe nada de cómo funciona por dentro.*
+>
+> *Hoy nuestros servicios serán muy simples — solo crean objetos —, pero la estructura
+> que dejamos montada nos permitirá añadir lógica real en la sesión siguiente sin tocar la UI."*
+
+Preguntar al alumno si ha entendido antes de continuar:
+
+> *"¿Tiene sentido la separación? ¿Alguna pregunta antes de ver el código?"*
+
+## Paso 5.2 — El agente crea todos los servicios de creación
+
+Para **cada entidad principal** identificada en las fases anteriores, crear un servicio
+en `src/services/` con **únicamente** métodos de creación (alta) y consulta simple.
+No añadir métodos de negocio — eso es Sesión 3.
+
+Patrón obligatorio:
 
 ```python
-from entities.resultado import Resultado
+from src.entities.resultado import Resultado
+from src.entities.xxx import Xxx
+
 
 class GestionXxxService:
-    """Orquesta las operaciones sobre Xxx."""
+    """Orquesta la creación y consulta de Xxx.
 
-    def __init__(self, ...) -> None:
-        ...
+    En esta sesión solo se crean objetos.
+    Los métodos de negocio se añadirán en la Sesión 3.
 
-    def registrar(self, ...) -> Resultado:
-        """TODO: implementar en sesión 3."""
-        return Resultado.exito("TODO")
+    Ejemplo:
+        >>> servicio = GestionXxxService()
+        >>> r = servicio.registrar("param1", "param2")
+        >>> r.ok
+        True
+    """
+
+    def __init__(self):
+        self.__elementos: list[Xxx] = []
+
+    def registrar(self, param1, param2) -> Resultado:
+        """Crea un objeto Xxx y lo guarda en memoria."""
+        elemento = Xxx(param1, param2)
+        self.__elementos.append(elemento)
+        return Resultado.exito(f"Xxx registrado: {param1}", valor=elemento)
+
+    def listar(self) -> list:
+        """Devuelve todos los objetos Xxx creados."""
+        return list(self.__elementos)
 ```
 
-## Paso 5.3 — El alumno crea los demás servicios
+Adaptar los nombres y parámetros al dominio concreto del alumno.
+Crear un fichero de servicio por cada entidad principal.
 
-> *"Siguiendo este patrón, cread el servicio para [siguiente entidad].
-> Mostradme el código cuando lo tengáis."*
+Después de crear cada servicio, explicar brevemente al alumno:
+- Qué hace el método `registrar` (crea y guarda).
+- Por qué `listar` devuelve una copia (`list(...)`) y no la lista interna directamente.
 
-## Paso 5.4 — Actualizar `src/main.py`
+## Paso 5.3 — El agente actualiza `src/main.py`
 
-Actualizar `src/main.py` para que construya las dependencias y demuestre que la arquitectura
-funciona de extremo a extremo (aunque sea con datos hardcodeados):
+Actualizar `src/main.py` para que construya todos los servicios y haga una demostración
+mínima de creación de objetos a través de ellos:
 
 ```python
-from services.gestion_xxx_service import GestionXxxService
-from entities.xxx import Xxx
+from src.services.gestion_xxx_service import GestionXxxService
+
 
 def main() -> None:
-    servicio = GestionXxxService(...)
-    resultado = servicio.registrar(...)
-    print(resultado.mensaje)
+    """Punto de entrada: demuestra la arquitectura de extremo a extremo."""
+    servicio = GestionXxxService()
+
+    resultado = servicio.registrar("param1", "param2")
+    print(f"{'✅' if resultado.ok else '❌'} {resultado.mensaje}")
+
+    elementos = servicio.listar()
+    print(f"Total elementos: {len(elementos)}")
+
 
 if __name__ == "__main__":
     main()
 ```
 
-Verificar que `python src/main.py` arranca sin errores.
+Verificar que `python src/main.py` arranca sin errores y muestra la línea con ✅.
+
+Señalar explícitamente al alumno que `main.py` **no importa ninguna entidad directamente**
+— toda la creación pasa por el servicio. Esto es la arquitectura en acción.
 
 ---
 
@@ -377,11 +439,14 @@ Si hay errores en rojo, no dar la sesión por terminada hasta que estén corregi
 - Los atributos de dominio son privados (`self.__nombre`). Ver `instructions/entities.instructions.md`.
 - **Sin type hints** — eso es Sesión 8. Si el alumno los añade, explicar que no corresponde todavía.
 - **Sin `__str__`** — eso es Sesión 6. Si el alumno lo añade, explicar que no corresponde todavía.
-- No implementar lógica de negocio todavía — solo estructura.
+- No implementar lógica de negocio en entidades todavía — solo estructura (`__init__` y atributos).
 - No añadir `@property` todavía — eso es Sesión 5.
 - `ui/` no importa nada de `entities/`.
 - `entities/resultado.py` debe existir antes de crear los servicios.
 - Los tests los escribe **exclusivamente el agente** — el alumno no debe escribirlos.
+- Los servicios los crea **exclusivamente el agente** — el alumno no los escribe en esta sesión.
+- **Los servicios solo tienen métodos de creación y listado** — los métodos de negocio se añadirán en Sesión 3, cuando las entidades tengan operaciones propias.
+- El agente **siempre explica el porqué** de la capa de servicios antes de crearlos.
 
 ---
 
@@ -402,8 +467,10 @@ Antes de cerrar la sesión, verifica que se cumplen **todos** los criterios:
 - [ ] Sin `__str__` en las clases (no corresponde hasta Sesión 6)
 - [ ] `src/entities/resultado.py` creado por el agente con `Resultado.exito` y `Resultado.error`, y el alumno ha confirmado que entiende su propósito
 - [ ] El agente ha escrito al menos un test de construcción por clase y todos pasan (`pytest -q`)
-- [ ] Al menos un servicio esqueleto creado en `src/services/`
-- [ ] `src/main.py` usa los servicios y arranca sin errores
+- [ ] El agente ha creado **todos** los servicios de creación en `src/services/` (uno por entidad principal)
+- [ ] Los servicios **solo tienen métodos de creación y listado** — sin lógica de negocio (eso es Sesión 3)
+- [ ] El alumno ha confirmado que entiende **por qué** existe la capa de servicios antes de que el agente los cree
+- [ ] `src/main.py` importa solo servicios (no entidades directamente) y arranca sin errores
 - [ ] Diagrama de clases Mermaid actualizado en `README.md` y validado por el alumno
 - [ ] El agente ha dado feedback final y el alumno ha corregido los errores en rojo
 
