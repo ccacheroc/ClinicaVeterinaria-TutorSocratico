@@ -1,6 +1,6 @@
 ---
 applyTo: 'tests/**/*.py'
-description: 'Reglas específicas para la capa de tests (tests/)'
+description: 'Reglas de la capa de tests'
 ---
 
 # Reglas — Capa `tests/`
@@ -15,25 +15,26 @@ Cada fichero de test corresponde a un módulo concreto del proyecto.
 | Fichero | Qué prueba |
 |---|---|
 | `tests/test_entities.py` | Entidades y reglas de negocio (sin mocks) |
-| `tests/test_gestion_concesionario_service.py` | `GestionConcesionarioService` |
-| `tests/test_gestion_personas_service.py` | `GestionPersonasService` |
-| `tests/test_seed_data_service.py` | `SeedDataService` |
-| `tests/test_ui_menu.py` | `MenuCLI` (con servicios mockeados) |
+| `tests/test_<nombre>_service.py` | Cada servicio de la capa `services/` |
+| `tests/test_seed_data_service.py` | Servicio de seed de datos |
+| `tests/test_ui_menu.py` | Capa UI (con servicios mockeados) |
+
+> **Ejemplo en Coches2026**: `test_gestion_concesionario_service.py`, `test_gestion_personas_service.py`.
 
 ## Estructura obligatoria de cada test
 
 ```python
 def test_nombre_descriptivo_del_escenario():
     # Given — estado inicial / contexto
-    coche = CocheCombustion("1234ABC", "Seat")
-    coche.repostar(10.0)
+    entidad = MiEntidad("id-001", "dato")
+    entidad.preparar(10.0)
 
     # When — acción bajo prueba
-    resultado = coche.avanzar(50)
+    resultado = entidad.ejecutar(5)
 
     # Then — verificaciones
     assert resultado.ok is True
-    assert coche.kilometros_recorridos == 50.0
+    assert entidad.estado == 5.0
 ```
 
 ## Reglas por tipo de test
@@ -56,27 +57,28 @@ from unittest.mock import MagicMock, patch
 from entities.resultado import Resultado
 from ui.menu import MenuCLI
 
-def test_menu_alta_cliente_exitosa():
+def test_menu_registrar_entidad_exitoso():
     # Given
-    gp_mock = MagicMock()
-    gp_mock.dar_de_alta_cliente.return_value = Resultado.exito("Cliente registrado")
-    gc_mock = MagicMock()
-    menu = MenuCLI(gc_mock, gp_mock)
+    servicio_mock = MagicMock()
+    servicio_mock.registrar.return_value = Resultado.exito("Entidad registrada")
+    menu = MenuCLI(servicio_mock)
 
     # When / Then
-    with patch("builtins.input", side_effect=["1", "1", "12345678A", "Ana", "García", "", "0", "0"]):
+    with patch("builtins.input", side_effect=["1", "id-001", "dato", "0"]):
         with patch("builtins.print") as mock_print:
             menu.iniciar()
             salidas = " ".join(str(c) for c in mock_print.call_args_list)
-            assert "Cliente registrado" in salidas
+            assert "Entidad registrada" in salidas
 ```
+
+> **Ejemplo en Coches2026**: `test_menu_alta_cliente_exitosa()` en `test_ui_menu.py`.
 
 ## Ejecución
 
 ```bash
-python -m pytest -q                      # todos los tests
-python -m pytest tests/test_entities.py -v   # solo entidades
-python -m pytest -k "avanzar" -v         # filtrar por nombre
+python -m pytest -q                       # todos los tests
+python -m pytest tests/test_entities.py -v  # solo entidades
+python -m pytest -k "registrar" -v         # filtrar por nombre
 ```
 
 ## Nombrado de tests
@@ -84,8 +86,12 @@ python -m pytest -k "avanzar" -v         # filtrar por nombre
 Patrón: `test_<clase_o_función>_<escenario_en_snake_case>`
 
 ```
+# Genérico
+test_entidad_ejecutar_sin_recursos_devuelve_error
+test_servicio_registrar_identificador_duplicado_devuelve_error
+test_menu_listar_llama_al_servicio
+
+# Ejemplo en Coches2026
 test_coche_combustion_avanzar_sin_gasolina_devuelve_error
 test_concesionario_anadir_cliente_dni_duplicado_devuelve_error
-test_menu_listar_coches_llama_al_servicio
 ```
-

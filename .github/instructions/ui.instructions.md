@@ -1,6 +1,6 @@
 ---
 applyTo: 'ui/**/*.py'
-description: 'Reglas específicas para la capa de interfaz de usuario (ui/)'
+description: 'Reglas de la capa de interfaz de usuario (UI/CLI)'
 ---
 
 # Reglas — Capa `ui/`
@@ -14,39 +14,38 @@ Traduce las acciones del usuario en llamadas a `services/` y convierte `Resultad
 
 - ✅ Importar desde `services/`.
 - ❌ **Prohibido importar desde `entities/`** — ni clases, ni tipos, ni constantes.
-- ❌ No instanciar entidades directamente (`Coche(...)`, `Persona(...)`, etc.).
+- ❌ No instanciar entidades directamente.
 
 ## Patrón de llamada a servicios
 
 ```python
 # ✅ Correcto: la UI llama al servicio y muestra el mensaje de Resultado
-resultado = self.__servicio.registrar_coche(matricula, marca, tipo)
+resultado = self.__servicio.registrar(identificador, datos)
 if resultado.ok:
     print(f"✅ {resultado.mensaje}")
 else:
     print(f"❌ {resultado.mensaje}")
 
 # ❌ Incorrecto: la UI instancia entidades directamente
-from entities.coche_combustion import CocheCombustion   # PROHIBIDO
-coche = CocheCombustion(matricula, marca)
+from entities.mi_entidad import MiEntidad   # PROHIBIDO
+obj = MiEntidad(identificador)
 ```
 
-## Estructura del menú (`ui/menu.py`)
+> **Ejemplo en Coches2026**: `ui/menu.py` llama a `GestionConcesionarioService.registrar_coche()`
+> y nunca importa `CocheCombustion` ni `Persona` directamente.
 
-- Clase `MenuCLI` con inyección de dependencias de servicios en `__init__`.
+## Estructura del menú
+
+- Clase de menú (`MenuCLI` o similar) con inyección de dependencias de servicios en `__init__`.
 - Método `iniciar()` como punto de entrada del bucle principal.
-- Cada opción de menú tiene su propio método privado (`__alta_cliente`, `__listar_coches`, etc.).
+- Cada opción de menú tiene su propio método privado (`__alta_entidad`, `__listar`, etc.).
 - Usar `try/except` solo para capturar excepciones de construcción que los servicios no hayan podido interceptar.
 
 ```python
 class MenuCLI:
-    def __init__(
-        self,
-        gestion_concesionario: GestionConcesionarioService,
-        gestion_personas: GestionPersonasService,
-    ) -> None:
-        self.__gc = gestion_concesionario
-        self.__gp = gestion_personas
+    def __init__(self, servicio_a: ServicioA, servicio_b: ServicioB) -> None:
+        self.__sa = servicio_a
+        self.__sb = servicio_b
 
     def iniciar(self) -> None:
         """Arranca el bucle principal del menú."""
@@ -63,4 +62,3 @@ class MenuCLI:
 
 Llamar siempre a `str(objeto)` o `resultado.mensaje`.
 No acceder a propiedades internas de las entidades directamente desde `ui/`.
-

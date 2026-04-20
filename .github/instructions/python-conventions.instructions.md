@@ -1,13 +1,13 @@
 ---
 applyTo: '**/*.py'
-description: 'Convenciones Python para el proyecto'
+description: 'Convenciones Python del proyecto'
 ---
 
-# Convenciones Python — Coches2026
+# Convenciones Python
 
 ## Versión y herramientas
 
-- **Python 3.13+** obligatorio.
+- **Python 3.12+** obligatorio.
 - Formateo: `black` (líneas ≤ 88 caracteres).
 - Linting: `ruff`.
 - Tests: `pytest`.
@@ -18,51 +18,52 @@ Todas las firmas públicas llevan type hints. Sin excepciones.
 
 ```python
 # ✅ Correcto
-def repostar(self, litros: float) -> Resultado:
+def realizar_operacion(self, cantidad: float) -> Resultado:
     ...
 
 # ❌ Incorrecto
-def repostar(self, litros):
+def realizar_operacion(self, cantidad):
     ...
 ```
 
 Usar `|` en lugar de `Optional` para tipos nullables (Python 3.10+):
 
 ```python
-def __init__(self, coche: Coche | None = None) -> None:
+def __init__(self, recurso: Recurso | None = None) -> None:
 ```
 
 ## Nomenclatura
 
 | Elemento | Convención | Ejemplo |
 |---|---|---|
-| Clases | `PascalCase` | `CocheCombustion` |
-| Métodos / funciones | `snake_case` | `avanzar_km` |
-| Atributos privados | `__doble_guion` | `self.__matricula` |
-| Atributos protegidos | `_un_guion` (solo si herencia lo requiere) | `self._energia` |
-| Constantes de módulo | `UPPER_SNAKE` | `CONSUMO_GASOLINA` |
+| Clases | `PascalCase` | `GestionInventario` |
+| Métodos / funciones | `snake_case` | `calcular_total` |
+| Atributos privados | `__doble_guion` | `self.__identificador` |
+| Atributos protegidos | `_un_guion` (solo si herencia lo requiere) | `self._estado` |
+| Constantes de módulo | `UPPER_SNAKE` | `MAX_INTENTOS` |
 
 ## Docstrings
 
 Docstring corto en todas las clases y métodos públicos. Formato:
 
 ```python
-def avanzar(self, km: float) -> Resultado:
-    """Avanza el coche la distancia indicada consumiendo energía.
+def procesar(self, cantidad: float) -> Resultado:
+    """Procesa la operación con la cantidad indicada.
 
     Args:
-        km: Kilómetros a recorrer (debe ser > 0).
+        cantidad: Valor a procesar (debe ser > 0).
 
     Returns:
-        Resultado con ok=True si el avance fue posible.
+        Resultado con ok=True si la operación fue exitosa.
 
     Example:
-        >>> c = CocheCombustion("1234ABC", "Seat")
-        >>> c.repostar(10)
-        >>> c.avanzar(50).ok
+        >>> obj = MiClase("id-001")
+        >>> obj.procesar(10).ok
         True
     """
 ```
+
+> **Ejemplo en Coches2026**: `Coche.avanzar(km)`, `CocheCombustion.repostar(litros)`.
 
 ## Errores y excepciones
 
@@ -75,15 +76,19 @@ def avanzar(self, km: float) -> Resultado:
 - `__repr__`: información técnica útil para depuración.
 
 ```python
+# Ejemplo genérico
 def __str__(self) -> str:
-    return f"{self.__marca} ({self.__matricula}) — {self.__kilometros_recorridos:.1f} km"
+    return f"{self.__nombre} [{self.__identificador}]"
 
 def __repr__(self) -> str:
-    return f"CocheCombustion(matricula={self.__matricula!r}, marca={self.__marca!r})"
+    return f"{self.__class__.__name__}(id={self.__identificador!r})"
+
+# Ejemplo en Coches2026
+def __str__(self) -> str:
+    return f"{self.__marca} ({self.__matricula}) — {self.__kilometros_recorridos:.1f} km"
 ```
 
 ## Imports
 
 Orden: stdlib → third-party → proyecto (separados por línea en blanco).
 No usar imports relativos (`from . import`) salvo en `__init__.py`.
-

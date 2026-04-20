@@ -1,9 +1,9 @@
 ---
 applyTo: 'README.md'
-description: 'Reglas para generar diagramas Mermaid (UML de clases y C4) en este proyecto'
+description: 'Reglas para generar diagramas Mermaid (UML de clases y C4)'
 ---
 
-# Reglas — Diagramas Mermaid en Coches2026
+# Reglas — Diagramas Mermaid
 
 Se activa automáticamente al editar `README.md`.
 Aplica tanto al diagrama UML de clases como al diagrama C4 de arquitectura.
@@ -25,7 +25,7 @@ classDiagram
     }
 ```
 
-### Reglas específicas para Coches2026
+### Reglas de este proyecto
 
 1. **Visibilidad**: `-` para `__privado`, `#` para `_protegido`, `+` para público/property.
 2. **Propiedades**: mostrarlas como atributos `+` sin paréntesis — son la interfaz observable.
@@ -35,33 +35,27 @@ classDiagram
 6. **Dependencias de retorno**: `..>` para indicar que una clase usa `Resultado`.
 7. **Servicios y UI**: incluirlos sin atributos (solo nombre de clase) para mostrar la arquitectura completa.
 
-### Ejemplo correcto
+### Ejemplo (Coches2026)
 
 ```mermaid
 classDiagram
-    class Coche {
+    class EntidadBase {
         <<abstract>>
-        -str __matricula
-        -str __marca
-        -float __kilometros_recorridos
-        +matricula str
-        +marca str
-        +kilometros_recorridos float
-        +avanzar(km: float) Resultado
-        +obtener_km_por_marca(marca: str) float
+        -str __identificador
+        -float __estado
+        +identificador str
+        +estado float
+        +ejecutar(cantidad: float) Resultado
     }
-    class CocheCombustion {
-        -float __gasolina
-        +gasolina float
-        +repostar(litros: float) Resultado
+    class EntidadA {
+        -float __recurso
+        +recurso float
+        +recargar(cantidad: float) Resultado
     }
-    class CocheElectrico {
-        -float __bateria_kwh
-        +bateria_kwh float
-        +recargar(kwh: float) Resultado
-    }
-    class CocheHibrido {
-        +avanzar(km: float) Resultado
+    class EntidadB {
+        -float __capacidad
+        +capacidad float
+        +consumir(cantidad: float) Resultado
     }
     class Resultado {
         +bool ok
@@ -72,25 +66,25 @@ classDiagram
         +error(mensaje, codigo, valor)$
     }
 
-    Coche <|-- CocheCombustion
-    Coche <|-- CocheElectrico
-    CocheCombustion <|-- CocheHibrido
-    CocheElectrico <|-- CocheHibrido
-    Coche ..> Resultado
+    EntidadBase <|-- EntidadA
+    EntidadBase <|-- EntidadB
+    EntidadBase ..> Resultado
 ```
+
+> En Coches2026: `EntidadBase` = `Coche`, `EntidadA` = `CocheCombustion`, `EntidadB` = `CocheElectrico`.
 
 ### Errores comunes a evitar
 
-- ❌ `+matricula()` con paréntesis en una property → ✅ `+matricula str`
-- ❌ Omitir `<<abstract>>` en `Coche`
+- ❌ `+atributo()` con paréntesis en una property → ✅ `+atributo tipo`
+- ❌ Omitir `<<abstract>>` en clases abstractas
 - ❌ No incluir `Resultado` como clase propia
-- ❌ Mezclar inglés y español en nombres de elementos
+- ❌ Mezclar inglés y español en nombres de elementos del diagrama
 
 ---
 
 ## Diagrama C4 de arquitectura (`C4Container`)
 
-### Niveles relevantes para este proyecto
+### Niveles relevantes
 
 - **Nivel 2 – Contenedores**: las cuatro capas. **Este es el nivel habitual.**
 - **Nivel 3 – Componentes**: solo si se detalla una capa concreta.
@@ -99,11 +93,11 @@ classDiagram
 
 ```mermaid
 C4Container
-    title Arquitectura C4 (nivel contenedor) — Coches2026
+    title Arquitectura C4 (nivel contenedor) — <Nombre del Proyecto>
 
     Person(usuario, "Usuario", "Opera la app por CLI")
 
-    Container_Boundary(sistema, "Coches2026") {
+    Container_Boundary(sistema, "<Nombre del Proyecto>") {
         Container(ui, "UI CLI", "Python / ui/", "Entrada/salida de consola y menús")
         Container(servicios, "Services", "Python / services/", "Orquesta casos de uso")
         Container(dominio, "Entities", "Python / entities/", "Reglas de negocio y modelo de dominio")
@@ -116,11 +110,12 @@ C4Container
     Rel(servicios, persistencia, "Guardará datos", "(futuro)")
 ```
 
-### Reglas para este proyecto
+### Reglas
 
 1. **Nunca** dibujar flecha `ui → dominio`; viola la arquitectura.
 2. `persistence` aparece siempre aunque esté vacía — comunica la intención arquitectónica.
 3. Usar `Container_Boundary` para agrupar todas las capas dentro del sistema.
+4. Sustituir `<Nombre del Proyecto>` por el nombre real del proyecto en cada diagrama.
 
 ### Errores comunes a evitar
 

@@ -1,6 +1,6 @@
 ---
 applyTo: 'entities/**/*.py'
-description: 'Reglas específicas para la capa de dominio (entities/): arquitectura, visibilidad, properties y setters'
+description: 'Reglas de la capa de dominio: arquitectura, visibilidad, properties y setters'
 ---
 
 # Reglas — Capa `entities/`
@@ -36,12 +36,19 @@ Usar cuando:
 - Es la opción **por defecto** en `entities/`.
 
 ```python
+# Ejemplo genérico
+class Entidad:
+    def __init__(self, identificador: str) -> None:
+        if not identificador:
+            raise ValueError("El identificador no puede estar vacío")
+        self.__identificador: str = identificador   # ← privado
+        self.__estado: float = 0.0                  # ← privado
+
+# Ejemplo en Coches2026
 class Coche(ABC):
     def __init__(self, matricula: str, marca: str) -> None:
-        if not matricula:
-            raise ValueError("La matrícula no puede estar vacía")
-        self.__matricula: str = matricula        # ← privado
-        self.__kilometros_recorridos: float = 0.0  # ← privado
+        self.__matricula: str = matricula
+        self.__kilometros_recorridos: float = 0.0
 ```
 
 ### `_un_guion` → Protegido (convención)
@@ -50,9 +57,10 @@ Usar **solo** cuando una subclase necesita leerlo o modificarlo directamente y a
 Documentar siempre el motivo.
 
 ```python
+# Ejemplo en Coches2026: _gasolina es accesible por CocheHibrido
 class CocheCombustion(Coche):
     def __init__(self, ...) -> None:
-        self._gasolina: float = 0.0  # accesible por CocheHibrido
+        self._gasolina: float = 0.0  # accesible por subclase CocheHibrido
 ```
 
 ### Sin guion → Público
@@ -64,14 +72,20 @@ Usar únicamente para:
 ### Cuándo añadir `@property` (lectura)
 
 Añadir `@property` cuando:
-1. El atributo forma parte de la **interfaz observable** de la entidad (ej. `matricula`, `kilometros_recorridos`).
+1. El atributo forma parte de la **interfaz observable** de la entidad.
 2. Otra capa (`services`, `ui`) necesita leerlo para mostrar información.
 3. Podría requerir lógica en el futuro (cálculo derivado, logging, lazy init).
 
 ```python
+# Ejemplo genérico
+@property
+def identificador(self) -> str:
+    """Identificador único de la entidad (solo lectura)."""
+    return self.__identificador
+
+# Ejemplo en Coches2026
 @property
 def matricula(self) -> str:
-    """Matrícula del coche (solo lectura)."""
     return self.__matricula
 ```
 
@@ -80,20 +94,25 @@ def matricula(self) -> str:
 ### Cuándo añadir setter (`@xxx.setter`)
 
 Añadir setter **solo** si se cumplen **las dos** condiciones:
-1. La mutación es parte explícita del **dominio** (ej. asignar un coche a una persona).
+1. La mutación es parte explícita del **dominio**.
 2. Hay **lógica de validación** que debe ejecutarse al asignar.
 
 ```python
+# Ejemplo genérico
+@recurso.setter
+def recurso(self, nuevo: "Recurso | None") -> None:
+    """Asigna un recurso; None indica ausencia de recurso."""
+    self.__recurso = nuevo
+
+# Ejemplo en Coches2026
 @coche.setter
 def coche(self, nuevo_coche: "Coche | None") -> None:
-    """Asigna un coche a la persona; None indica que no tiene coche."""
-    # la validación de negocio vive en Persona.vender_coche(), no aquí
     self.__coche = nuevo_coche
 ```
 
 **No añadir setter** si:
-- El valor se establece solo en `__init__` y no cambia (ej. `matricula`).
-- La mutación se hace a través de un método de dominio con nombre explícito (preferir `transferir_coche()` sobre un setter genérico).
+- El valor se establece solo en `__init__` y no cambia.
+- La mutación se hace a través de un método de dominio con nombre explícito.
 
 ### Resumen rápido de visibilidad
 
@@ -112,6 +131,14 @@ def coche(self, nuevo_coche: "Coche | None") -> None:
 Toda operación que puede fallar por **lógica de negocio** devuelve `Resultado`:
 
 ```python
+# Ejemplo genérico
+def ejecutar(self, cantidad: float) -> Resultado:
+    if cantidad <= 0:
+        return Resultado.error("La cantidad debe ser positiva", "CANTIDAD_INVALIDA")
+    ...
+    return Resultado.exito("Ejecutado correctamente")
+
+# Ejemplo en Coches2026
 def avanzar(self, km: float) -> Resultado:
     if km <= 0:
         return Resultado.error("Los km deben ser positivos", "KM_INVALIDOS")
@@ -119,7 +146,7 @@ def avanzar(self, km: float) -> Resultado:
     return Resultado.exito(f"Avanzado {km} km")
 ```
 
-Las excepciones (`ValueError`, clases propias de `excepciones.py`) se reservan para **invariantes de construcción** (datos de entrada inválidos que son un bug del llamador).
+Las excepciones (`ValueError`, clases propias de `excepciones.py`) se reservan para **invariantes de construcción** (datos inválidos que son un bug del llamador, no un flujo de negocio esperado).
 
 ---
 
@@ -130,6 +157,10 @@ Usar `ClassVar` y documentar su propósito:
 ```python
 from typing import ClassVar
 
+class Entidad:
+    _contador_global: ClassVar[int] = 0  # compartido por todas las instancias
+
+# Ejemplo en Coches2026
 class Coche(ABC):
     __km_por_marca: ClassVar[dict[str, float]] = {}
 ```
@@ -140,14 +171,24 @@ Obligatorios en todas las firmas públicas. Usar `X | None` (nunca `Optional[X]`
 
 ## Clases abstractas
 
-`Coche` es abstracta (`ABC`). Decorar con `@abstractmethod` los métodos que cada subclase debe implementar obligatoriamente (`avanzar`).
+Usar `ABC` y `@abstractmethod` para los métodos que cada subclase debe implementar obligatoriamente.
+
+```python
+from abc import ABC, abstractmethod
+
+class EntidadBase(ABC):
+    @abstractmethod
+    def ejecutar(self, cantidad: float) -> Resultado: ...
+
+# Ejemplo en Coches2026: Coche es abstracta, avanzar() es abstractmethod
+```
 
 ## Herencia múltiple
 
-`CocheHibrido` hereda de `CocheElectrico` y `CocheCombustion`.
-Documentar el MRO elegido con un comentario en la clase:
+Si el proyecto requiere herencia múltiple, documentar el MRO elegido con un comentario:
 
 ```python
+# Ejemplo en Coches2026
 # MRO: CocheHibrido → CocheElectrico → CocheCombustion → Coche
 class CocheHibrido(CocheElectrico, CocheCombustion):
     ...

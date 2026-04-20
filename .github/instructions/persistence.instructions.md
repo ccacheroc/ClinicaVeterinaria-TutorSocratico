@@ -1,6 +1,6 @@
 ---
 applyTo: 'persistence/**/*.py'
-description: 'Reglas específicas para la capa de persistencia (persistence/)'
+description: 'Reglas de la capa de persistencia (adaptadores de almacenamiento)'
 ---
 
 # Reglas — Capa `persistence/`
@@ -36,21 +36,23 @@ def cargar(self) -> list:
 import json
 from pathlib import Path
 
-class CochesRepoJson:
+class EntidadRepoJson:
     def __init__(self, path: Path) -> None:
         self.__path = path
 
-    def guardar(self, coches: list) -> None:
+    def guardar(self, entidades: list) -> None:
         with open(self.__path, "w", encoding="utf-8") as f:
-            json.dump([c.to_dict() for c in coches], f, ensure_ascii=False, indent=2)
+            json.dump([e.to_dict() for e in entidades], f, ensure_ascii=False, indent=2)
 
     def cargar(self) -> list:
         try:
             with open(self.__path, encoding="utf-8") as f:
-                return [CocheCombustion.from_dict(d) for d in json.load(f)]
+                return [MiEntidad.from_dict(d) for d in json.load(f)]
         except FileNotFoundError:
             return []
 ```
+
+> **Ejemplo en Coches2026**: `CochesRepoJson` usa `Coche.to_dict()` y `CocheCombustion.from_dict()`.
 
 ## Adaptadores binarios (Pickle)
 
@@ -59,10 +61,13 @@ import pickle
 from pathlib import Path
 
 # WARNING: nunca cargar ficheros pickle de fuentes no confiables (riesgo de ejecución arbitraria).
-class CochesRepoBin:
-    def guardar(self, coches: list) -> None:
+class EntidadRepoBin:
+    def __init__(self, path: Path) -> None:
+        self.__path = path
+
+    def guardar(self, entidades: list) -> None:
         with open(self.__path, "wb") as f:
-            pickle.dump(coches, f)
+            pickle.dump(entidades, f)
 
     def cargar(self) -> list:
         try:
@@ -81,4 +86,3 @@ Usar siempre `pathlib.Path`. El path se **inyecta** en el constructor; nunca se 
 1. Crear el fichero en `persistence/` con nombre `<entidad>_repo_<formato>.py`.
 2. Inyectarlo en `services/` desde `main.py`.
 3. Añadir test con `tmp_path` de pytest (sin tocar ficheros reales).
-

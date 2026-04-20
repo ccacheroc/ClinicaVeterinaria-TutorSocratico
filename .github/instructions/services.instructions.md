@@ -1,6 +1,6 @@
 ---
 applyTo: 'services/**/*.py'
-description: 'Reglas específicas para la capa de servicios (services/)'
+description: 'Reglas de la capa de servicios (casos de uso)'
 ---
 
 # Reglas — Capa `services/`
@@ -23,22 +23,23 @@ Cada método de servicio representa un caso de uso completo y **devuelve `Result
 
 ```python
 from entities.resultado import Resultado
-from entities.concesionario import Concesionario
 
-class GestionConcesionarioService:
-    """Orquesta operaciones sobre el inventario del concesionario."""
+class GestionEntidadService:
+    """Orquesta operaciones sobre <nombre de la entidad principal>."""
 
-    def __init__(self, concesionario: Concesionario) -> None:
-        self.__concesionario = concesionario
+    def __init__(self, repositorio: object) -> None:
+        self.__repositorio = repositorio
 
-    def registrar_coche(self, matricula: str, marca: str, tipo: str) -> Resultado:
-        """Crea y añade un coche al concesionario.
+    def registrar(self, identificador: str, datos: str) -> Resultado:
+        """Crea y registra una nueva entidad.
 
         Returns:
-            Resultado con ok=True si el coche se añadió correctamente.
+            Resultado con ok=True si el registro fue correcto.
         """
         ...
 ```
+
+> **Ejemplo en Coches2026**: `GestionConcesionarioService.registrar_coche(matricula, marca, tipo)`.
 
 ## Gestión de excepciones
 
@@ -47,7 +48,7 @@ Si una entidad lanza una excepción de construcción, el servicio la captura y l
 
 ```python
 try:
-    coche = CocheCombustion(matricula, marca)
+    entidad = MiEntidad(identificador, datos)
 except ValueError as e:
     return Resultado.error(str(e), "DATOS_INVALIDOS")
 ```
@@ -61,4 +62,3 @@ Usa los mismos métodos públicos de servicio que usaría cualquier caso de uso 
 ## Type hints
 
 Obligatorios en todas las firmas. El tipo de retorno es siempre `Resultado` o un tipo concreto cuando no puede fallar.
-

@@ -1,21 +1,20 @@
+---
+mode: 'agent'
+description: 'Sesión 7 — Sobrecarga de operadores matemáticos, comparación y acceso por índice'
+---
+
 # CONTEXTO DE LA SESIÓN ACTUAL
-Actualmente estamos en la **Sesión 7** de la asignatura.
-El objetivo de hoy es implementar la **sobrecarga de operadores** matemáticos, de comparación y de acceso por índice.
+Estamos en la **Sesión 7** de la asignatura.
+El objetivo de hoy es implementar la **sobrecarga de operadores**.
 
 # TAREAS DE HOY (WORKFLOW)
 
-1. Implementar `__eq__` y `__hash__` en entidades con identidad:
-   - `Coche`: igualdad por matrícula.
-   - `Persona`: igualdad por DNI.
-2. Implementar operadores aritméticos en `Concesionario`:
-   - `__add__` / `__iadd__` (`+`, `+=`): añadir un `Coche` al inventario → devuelve nuevo concesionario o muta el actual.
-   - `__sub__` / `__isub__` (`-`, `-=`): eliminar un `Coche` por matrícula.
-3. Implementar `__getitem__` en `Concesionario` para acceder a coches por índice o matrícula:
-   ```python
-   concesionario["1234ABC"]  # devuelve el Coche con esa matrícula o None
-   concesionario[0]          # devuelve el primer coche del inventario
-   ```
-4. Implementar `__contains__` (`in`) para comprobar si una matrícula está en el inventario.
+1. Implementar `__eq__` y `__hash__` en las entidades que tienen identidad (igualdad por identificador único).
+2. Implementar operadores de colección en la clase contenedora principal del dominio:
+   - `__add__` / `__iadd__` (`+`, `+=`): añadir un elemento → nuevo objeto o mutación.
+   - `__sub__` / `__isub__` (`-`, `-=`): eliminar un elemento por identificador.
+3. Implementar `__getitem__` para acceder a elementos por índice o identificador.
+4. Implementar `__contains__` (`in`) para comprobar si un identificador está en la colección.
 5. Añadir tests para cada operador.
 
 # REGLAS ESTRICTAS PARA HOY
@@ -27,5 +26,4 @@ El objetivo de hoy es implementar la **sobrecarga de operadores** matemáticos, 
 
 # MODO TUTOR
 
-Muestra `__eq__` y `__hash__` de `Coche`. Luego pide al alumno que implemente `__add__` de `Concesionario` antes de mostrar la solución.
-
+Muestra `__eq__` y `__hash__` de la entidad principal. Luego pide al alumno que implemente `__add__` de la clase contenedora antes de mostrar la solución.

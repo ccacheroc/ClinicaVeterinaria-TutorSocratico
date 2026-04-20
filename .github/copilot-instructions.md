@@ -1,12 +1,20 @@
-# Instrucciones globales para GitHub Copilot — Coches2026
+# Instrucciones globales para GitHub Copilot
 
-Aplicación de consola en Python 3.12 para gestionar un concesionario.
-Dominio académico: las sesiones de la asignatura añaden gradualmente conceptos OO.
+Este fichero se aplica a **todo** el repositorio en todo momento.
+Referencia las instrucciones específicas en `instructions/` y los prompts reutilizables en `prompts/`.
+
+---
+
+## Contexto del proyecto
+
+Aplicación de consola en Python 3.12 para gestionar un dominio de negocio.
 Arquitectura de **cuatro capas** con dependencias unidireccionales:
 
 ```
 ui  →  services  →  entities  →  (persistence)
 ```
+
+> **Proyecto de referencia para los ejemplos**: Coches2026 — gestión de un concesionario de coches.
 
 ---
 
