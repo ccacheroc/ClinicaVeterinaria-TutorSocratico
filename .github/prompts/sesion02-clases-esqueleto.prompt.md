@@ -150,7 +150,92 @@ Revisar cada clase que presente el alumno y dar feedback específico:
 
 No pasar a la siguiente clase hasta que la actual esté bien.
 
-## Paso 3.3 — Crear los `__init__.py` necesarios
+## Paso 3.3 — El agente explica y crea `resultado.py`
+
+Antes de crear los servicios, el agente explica al alumno por qué se necesita esta clase
+y la crea íntegramente. El alumno **no la implementa** — solo la comprende.
+
+### Por qué existe `Resultado` (explicación que el agente debe dar al alumno)
+
+> *"Fijaos en que nuestras entidades van a tener operaciones que pueden salir bien o mal.
+> Por ejemplo, 'avanzar un coche' puede fallar si no hay gasolina; 'registrar un cliente'
+> puede fallar si el DNI ya existe.*
+>
+> *¿Cómo comunicamos ese fallo al servicio, y el servicio a la UI?*
+>
+> *Una opción sería lanzar una excepción. Pero las excepciones están pensadas para
+> situaciones inesperadas — bugs, fallos de red, errores de programación. Que un coche
+> no tenga gasolina no es un bug: es un caso de uso normal que hay que tratar con
+> lógica ordinaria.*
+>
+> *Otra opción sería devolver `None` o un booleano. Pero entonces perdemos el mensaje
+> de error: ¿cómo sabe la UI qué decirle al usuario?*
+>
+> *La solución es una clase auxiliar — no pertenece al dominio del negocio, sino a la
+> infraestructura de comunicación entre capas — que envuelve el resultado de cualquier
+> operación: si fue bien (`ok=True`) con el dato o mensaje de retorno, o si fue mal
+> (`ok=False`) con el motivo del error y un código identificador.*
+>
+> *Esta clase se llama `Resultado`. No representa ningún concepto de vuestro dominio
+> (no es un coche, ni un cliente, ni un producto) — es una convención técnica que
+> usaréis en absolutamente todos los métodos de negocio del proyecto. La creo yo
+> ahora para que podáis concentraros en el dominio."*
+
+### Implementación que el agente crea en `src/entities/resultado.py`
+
+```python
+class Resultado:
+    """Envuelve el resultado de cualquier operación que puede fallar.
+
+    No es una clase de dominio: es una utilidad de comunicación entre capas.
+    Toda operación de negocio que puede fallar debe devolver Resultado
+    en lugar de lanzar una excepción o devolver None.
+
+    Uso:
+        return Resultado.exito("Operación completada")
+        return Resultado.error("No hay suficiente stock", "SIN_STOCK")
+    """
+
+    def __init__(self, ok, mensaje, codigo=None, valor=None):
+        self.ok = ok
+        self.mensaje = mensaje
+        self.codigo = codigo   # código corto para identificar el tipo de error
+        self.valor = valor     # dato de retorno opcional en caso de éxito
+
+    @classmethod
+    def exito(cls, mensaje, valor=None):
+        return cls(True, mensaje, valor=valor)
+
+    @classmethod
+    def error(cls, mensaje, codigo=None, valor=None):
+        return cls(False, mensaje, codigo=codigo, valor=valor)
+```
+
+Tras crearla, el agente muestra un ejemplo de uso adaptado al dominio del alumno,
+para que vea concretamente cómo la usarán sus propias entidades:
+
+```python
+# En una entidad del dominio del alumno:
+def realizar_operacion(self, cantidad):
+    if cantidad <= 0:
+        return Resultado.error("La cantidad debe ser positiva", "CANTIDAD_INVALIDA")
+    self.__estado += cantidad
+    return Resultado.exito(f"Operación realizada correctamente")
+
+# En la UI (adelanto de cómo se usará):
+resultado = servicio.realizar_operacion(10)
+if resultado.ok:
+    print(f"✅ {resultado.mensaje}")
+else:
+    print(f"❌ {resultado.mensaje}")
+```
+
+Preguntar al alumno si ha entendido la motivación antes de continuar:
+
+> *"¿Tiene sentido por qué usamos `Resultado` en lugar de lanzar excepciones o devolver None?
+> ¿Tenéis alguna duda antes de que empecemos a usarla en los servicios?"*
+
+## Paso 3.4 — Crear los `__init__.py` necesarios
 
 Asegurarse de que todos los paquetes tienen su `__init__.py`.
 
@@ -197,9 +282,9 @@ El alumno solo necesita ver que todos los tests pasan en verde.
 ## Paso 5.2 — El agente crea el esqueleto de un servicio como ejemplo
 
 Crear **un servicio** (el más representativo) en `src/services/` con:
-- Método(s) esqueleto que devuelvan `Resultado`.
+- Método(s) esqueleto que devuelvan `Resultado` (ya creado en Fase 3).
 - Inyección de dependencias en `__init__`.
-- Sin lógica de negocio todavía — solo `pass` o `return Resultado.exito("TODO")`.
+- Sin lógica de negocio todavía — solo `return Resultado.exito("TODO")`.
 
 ```python
 from entities.resultado import Resultado
@@ -315,7 +400,7 @@ Antes de cerrar la sesión, verifica que se cumplen **todos** los criterios:
 - [ ] Al menos 3 clases de dominio creadas en `src/entities/` con atributos `self.__privado`
 - [ ] Sin type hints en el código del alumno (no corresponde hasta Sesión 8)
 - [ ] Sin `__str__` en las clases (no corresponde hasta Sesión 6)
-- [ ] `src/entities/resultado.py` existe con `Resultado.exito` y `Resultado.error`
+- [ ] `src/entities/resultado.py` creado por el agente con `Resultado.exito` y `Resultado.error`, y el alumno ha confirmado que entiende su propósito
 - [ ] El agente ha escrito al menos un test de construcción por clase y todos pasan (`pytest -q`)
 - [ ] Al menos un servicio esqueleto creado en `src/services/`
 - [ ] `src/main.py` usa los servicios y arranca sin errores
