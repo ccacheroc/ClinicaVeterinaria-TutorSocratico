@@ -1,99 +1,92 @@
-from entities.coche import Coche
-from entities.coche_combustion import CocheCombustion
-from entities.coche_electrico import CocheElectrico
-from entities.coche_hibrido import CocheHibrido
-from entities.concesionario import Concesionario
-from entities.persona import Persona
+from src.entities.animal import Animal
+from src.entities.dueno import Dueno
+from src.entities.veterinario import Veterinario
+from src.entities.visita import Visita
+from src.entities.servicio import Servicio
 
 
-def test_coche_combustion_avanza_si_hay_gasolina():
+def test_dueno_se_crea_correctamente():
+    # Given / When
+    dueno = Dueno("12345678A", "Ana García", "ana@email.com", "600111222")
+
+    # Then
+    assert dueno is not None
+
+
+def test_veterinario_se_crea_correctamente():
+    # Given / When
+    vet = Veterinario("87654321B", "Dr. López", "lopez@clinica.com", "600333444")
+
+    # Then
+    assert vet is not None
+
+
+def test_veterinario_tiene_atributos_de_clase():
+    # Then — los atributos de clase existen independientemente de las instancias
+    assert hasattr(Veterinario, "especialidades_clinicas")
+    assert hasattr(Veterinario, "tipos_animales_atendidos")
+    assert len(Veterinario.especialidades_clinicas) > 0
+    assert len(Veterinario.tipos_animales_atendidos) > 0
+
+
+def test_servicio_se_crea_correctamente():
+    # Given / When
+    servicio = Servicio("S001", "Consulta general", "Revisión rutinaria del animal", 30.0, "30 min")
+
+    # Then
+    assert servicio is not None
+
+
+def test_animal_se_crea_correctamente():
     # Given
-    coche = CocheCombustion("1111AAA", "Seat")
-    coche.repostar(10)
+    dueno = Dueno("12345678A", "Ana García", "ana@email.com", "600111222")
 
     # When
-    resultado = coche.avanzar(100)
+    animal = Animal("Rex", "2020-03-15", "perro", "labrador", "negro", dueno)
 
     # Then
-    assert resultado.ok is True
-    assert coche.kilometros_recorridos == 100
-    assert round(coche.gasolina, 2) == 5.0
+    assert animal is not None
 
 
-def test_coche_electrico_no_avanza_sin_bateria():
+def test_animal_actualiza_contador_por_tipo():
+    # Given — resetear el contador para aislar el test
+    Animal.contador_por_tipo = {}
+
+    # When
+    dueno = Dueno("12345678A", "Ana García", "ana@email.com", "600111222")
+    Animal("Rex", "2020-03-15", "perro", "labrador", "negro", dueno)
+    Animal("Luna", "2021-06-01", "gato", "siamés", "blanco", dueno)
+    Animal("Rocky", "2019-11-20", "perro", "bulldog", "marrón", dueno)
+
+    # Then
+    assert Animal.contador_por_tipo["perro"] == 2
+    assert Animal.contador_por_tipo["gato"] == 1
+
+
+def test_visita_se_crea_correctamente():
     # Given
-    coche = CocheElectrico("2222BBB", "Tesla")
+    dueno = Dueno("12345678A", "Ana García", "ana@email.com", "600111222")
+    animal = Animal("Rex", "2020-03-15", "perro", "labrador", "negro", dueno)
+    vet = Veterinario("87654321B", "Dr. López", "lopez@clinica.com", "600333444")
+    servicio = Servicio("S001", "Consulta general", "Revisión rutinaria", 30.0, "30 min")
 
     # When
-    resultado = coche.avanzar(10)
+    visita = Visita("2026-04-21", servicio, animal, vet)
 
     # Then
-    assert resultado.ok is False
-    assert coche.kilometros_recorridos == 0
+    assert visita is not None
 
 
-def test_coche_hibrido_prioriza_bateria():
+def test_visita_no_pagada_por_defecto():
     # Given
-    coche = CocheHibrido("3333CCC", "Toyota")
-    coche.recargar(1)
-    coche.repostar(50)
+    dueno = Dueno("12345678A", "Ana García", "ana@email.com", "600111222")
+    animal = Animal("Rex", "2020-03-15", "perro", "labrador", "negro", dueno)
+    vet = Veterinario("87654321B", "Dr. López", "lopez@clinica.com", "600333444")
+    servicio = Servicio("S001", "Consulta general", "Revisión rutinaria", 30.0, "30 min")
 
     # When
-    resultado = coche.avanzar(10)
+    visita = Visita("2026-04-21", servicio, animal, vet)
 
-    # Then
-    assert resultado.ok is True
-    assert resultado.valor == "electrico"
-    assert round(coche.bateria_kwh, 2) == 0.8
-    assert coche.gasolina == 50
-
-
-def test_venta_coche_valida():
-    # Given
-    vendedor = Persona("1", "Ana", "Lopez", CocheCombustion("4444DDD", "Ford"))
-    comprador = Persona("2", "Luis", "Perez")
-
-    # When
-    resultado = vendedor.vender_coche(comprador)
-
-    # Then
-    assert resultado.ok is True
-    assert vendedor.coche is None
-    assert comprador.coche is not None
-
-
-def test_concesionario_operadores_copia_y_mutacion():
-    # Given
-    concesionario = Concesionario("Demo")
-    coche = CocheCombustion("5555EEE", "Seat")
-
-    # When
-    copia = concesionario + coche
-
-    # Then
-    assert len(concesionario) == 0
-    assert len(copia) == 1
-
-    # When
-    concesionario += coche
-
-    # Then
-    assert len(concesionario) == 1
-
-
-def test_kilometros_por_marca_acumula():
-    # Given
-    marca = "MarcaTest"
-    c1 = CocheCombustion("6666FFF", marca)
-    c2 = CocheElectrico("7777GGG", marca)
-    c1.repostar(10)
-    c2.recargar(10)
-
-    # When
-    c1.avanzar(20)
-    c2.avanzar(30)
-
-    # Then
-    total = Coche.obtener_kilometros_por_marca(marca)
-    assert round(total, 2) >= 50.0
+    # Then — por defecto una visita recién creada no está pagada
+    assert visita._Visita__pagada == False
 
