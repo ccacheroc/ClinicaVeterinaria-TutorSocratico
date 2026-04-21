@@ -29,6 +29,18 @@ Usa la versión que reporte ese comando como referencia para las type hints, sin
 
 ---
 
+## Flujo de trabajo Git
+
+- Se trabaja **directamente sobre `main`** — no hay ramas de trabajo.
+- Antes de empezar cada sesión: `git pull origin main`.
+- Al terminar cada sesión: `git push origin main`.
+- Mensaje de commit: `"sesionXX: descripción corta en español"`.
+
+> Flujo completo, coordinación entre miembros y resolución de conflictos en
+> `.github/instructions/gitflow.instructions.md`.
+
+---
+
 ## Comandos esenciales
 
 ```bash
@@ -66,9 +78,11 @@ tests/                 ← tests por capa: test_entities, test_*_service, test_u
 
 1. `ui/` **no puede importar** nada de `entities/`. Solo importa de `services/`.
 2. `entities/` no contiene `print()`, `input()` ni acceso a ficheros.
-3. Toda operación que puede fallar devuelve `Resultado` (nunca lanza excepción al exterior).
-4. Atributos de instancia en `entities/` son siempre privados (`self.__nombre`).
-5. Type hints obligatorios en todas las firmas públicas.
+3. `services/` no contiene I/O de consola — solo orquesta entidades.
+4. Toda operación que puede fallar devuelve `Resultado` (nunca lanza excepción al exterior).
+5. Atributos de instancia en `entities/` son siempre privados (`self.__nombre`); expuestos solo con `@property` de lectura. Setter solo si hay validación de dominio.
+6. Type hints en todas las firmas públicas (versión detectada desde el entorno virtual).
+7. Tests con pytest; estructura `Given/When/Then`. Mocks solo en tests de servicios y UI, nunca en tests de entidades.
 
 ---
 
@@ -76,12 +90,16 @@ tests/                 ← tests por capa: test_entities, test_*_service, test_u
 
 | Qué necesitas saber | Fichero |
 |---|---|
+| Flujo Git sobre main, coordinación, conflictos | `.github/instructions/gitflow.instructions.md` |
 | Arquitectura de capas completa | `.github/instructions/architecture.instructions.md` |
 | Reglas de dominio y visibilidad OO | `.github/instructions/entities.instructions.md` |
 | Convenciones Python del proyecto | `.github/instructions/python-conventions.instructions.md` |
-| Cómo escribir tests | `.github/instructions/tests.instructions.md` |
+| Casos de uso, gestión de errores en servicios | `.github/instructions/services.instructions.md` |
 | Reglas de UI | `.github/instructions/ui.instructions.md` |
+| Adaptadores JSON/Pickle, interfaz de repositorio | `.github/instructions/persistence.instructions.md` |
+| Cómo escribir tests | `.github/instructions/tests.instructions.md` |
 | Cómo generar diagramas Mermaid | `.github/instructions/mermaid.instructions.md` |
+| Contexto pedagógico y tareas por sesión | `.github/prompts/sesionXX-*.prompt.md` |
 
 ---
 
@@ -92,4 +110,5 @@ tests/                 ← tests por capa: test_entities, test_*_service, test_u
 - ❌ No crear tests que instancien entidades en `test_ui_menu.py` (usar mocks de servicios).
 - ❌ No subir `.venv/`, `__pycache__/`, `dist/` ni `build/`.
 - ❌ No asumir una versión de Python fija: detéctala siempre desde el entorno virtual.
-
+- ❌ No usar `python main.py` — el punto de entrada correcto es `python -m src.main`.
+- ❌ No lanzar excepciones al exterior desde entidades o servicios — usar `Resultado`.

@@ -7,14 +7,15 @@ Referencia las instrucciones específicas en `instructions/` y los prompts reuti
 
 ## Contexto del proyecto
 
-Aplicación de consola en Python 3.12 para gestionar un dominio de negocio.
+Aplicación de consola en Python para gestionar un dominio de negocio.
+La versión concreta de Python se determina a partir del entorno virtual activo (`python --version`); no se asume ninguna versión fija.
 Arquitectura de **cuatro capas** con dependencias unidireccionales:
 
 ```
 ui  →  services  →  entities  →  (persistence)
 ```
 
-> **Proyecto de referencia para los ejemplos**: Coches2026 — gestión de un concesionario de coches.
+> El dominio de negocio específico de este proyecto está descrito en `README.md`.
 
 ---
 
@@ -37,8 +38,9 @@ ui  →  services  →  entities  →  (persistence)
 3. **`services` no tiene I/O de consola** — solo orquesta entidades.
 4. **Toda operación que puede fallar devuelve `Resultado`** (`entities/resultado.py`).
 5. **Atributos de dominio son privados** (`__nombre`); expuestos solo con `@property` de lectura. Setter solo si hay validación de dominio.
-6. **Python 3.12+**, type hints en todas las firmas públicas.
+6. **Python** (versión del entorno virtual activo), type hints en todas las firmas públicas.
 7. **Tests con pytest**; estructura `Given/When/Then`. Mocks solo en tests de servicios y UI, nunca en tests de entidades.
+8. El punto de entrada es `python -m src.main` — no `python main.py`.
 
 ---
 
