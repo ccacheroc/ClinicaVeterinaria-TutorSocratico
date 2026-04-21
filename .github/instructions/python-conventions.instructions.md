@@ -63,7 +63,7 @@ def procesar(self, cantidad: float) -> Resultado:
     """
 ```
 
-> **Ejemplo en Coches2026**: `Coche.avanzar(km)`, `CocheCombustion.repostar(litros)`.
+> **Ejemplo en ClinicaVeterinaria**: `Coche.avanzar(km)`, `CocheCombustion.repostar(litros)`.
 
 ## Errores y excepciones
 
@@ -83,7 +83,7 @@ def __str__(self) -> str:
 def __repr__(self) -> str:
     return f"{self.__class__.__name__}(id={self.__identificador!r})"
 
-# Ejemplo en Coches2026
+# Ejemplo en ClinicaVeterinaria
 def __str__(self) -> str:
     return f"{self.__marca} ({self.__matricula}) — {self.__kilometros_recorridos:.1f} km"
 ```

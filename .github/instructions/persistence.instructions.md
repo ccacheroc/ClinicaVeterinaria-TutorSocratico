@@ -52,7 +52,7 @@ class EntidadRepoJson:
             return []
 ```
 
-> **Ejemplo en Coches2026**: `CochesRepoJson` usa `Coche.to_dict()` y `CocheCombustion.from_dict()`.
+> **Ejemplo en ClinicaVeterinaria**: `CochesRepoJson` usa `Coche.to_dict()` y `CocheCombustion.from_dict()`.
 
 ## Adaptadores binarios (Pickle)
 

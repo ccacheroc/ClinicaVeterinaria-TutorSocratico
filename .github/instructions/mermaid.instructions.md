@@ -35,7 +35,7 @@ classDiagram
 6. **Dependencias de retorno**: `..>` para indicar que una clase usa `Resultado`.
 7. **Servicios y UI**: incluirlos sin atributos (solo nombre de clase) para mostrar la arquitectura completa.
 
-### Ejemplo (Coches2026)
+### Ejemplo (ClinicaVeterinaria)
 
 ```mermaid
 classDiagram
@@ -71,7 +71,7 @@ classDiagram
     EntidadBase ..> Resultado
 ```
 
-> En Coches2026: `EntidadBase` = `Coche`, `EntidadA` = `CocheCombustion`, `EntidadB` = `CocheElectrico`.
+> En ClinicaVeterinaria: `EntidadBase` = `Coche`, `EntidadA` = `CocheCombustion`, `EntidadB` = `CocheElectrico`.
 
 ### Errores comunes a evitar
 

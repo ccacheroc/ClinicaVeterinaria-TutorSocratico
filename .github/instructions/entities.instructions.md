@@ -44,7 +44,7 @@ class Entidad:
         self.__identificador: str = identificador   # ← privado
         self.__estado: float = 0.0                  # ← privado
 
-# Ejemplo en Coches2026
+# Ejemplo en ClinicaVeterinaria
 class Coche(ABC):
     def __init__(self, matricula: str, marca: str) -> None:
         self.__matricula: str = matricula
@@ -57,7 +57,7 @@ Usar **solo** cuando una subclase necesita leerlo o modificarlo directamente y a
 Documentar siempre el motivo.
 
 ```python
-# Ejemplo en Coches2026: _gasolina es accesible por CocheHibrido
+# Ejemplo en ClinicaVeterinaria: _gasolina es accesible por CocheHibrido
 class CocheCombustion(Coche):
     def __init__(self, ...) -> None:
         self._gasolina: float = 0.0  # accesible por subclase CocheHibrido
@@ -83,7 +83,7 @@ def identificador(self) -> str:
     """Identificador único de la entidad (solo lectura)."""
     return self.__identificador
 
-# Ejemplo en Coches2026
+# Ejemplo en ClinicaVeterinaria
 @property
 def matricula(self) -> str:
     return self.__matricula
@@ -104,7 +104,7 @@ def recurso(self, nuevo: "Recurso | None") -> None:
     """Asigna un recurso; None indica ausencia de recurso."""
     self.__recurso = nuevo
 
-# Ejemplo en Coches2026
+# Ejemplo en ClinicaVeterinaria
 @coche.setter
 def coche(self, nuevo_coche: "Coche | None") -> None:
     self.__coche = nuevo_coche
@@ -138,7 +138,7 @@ def ejecutar(self, cantidad: float) -> Resultado:
     ...
     return Resultado.exito("Ejecutado correctamente")
 
-# Ejemplo en Coches2026
+# Ejemplo en ClinicaVeterinaria
 def avanzar(self, km: float) -> Resultado:
     if km <= 0:
         return Resultado.error("Los km deben ser positivos", "KM_INVALIDOS")
@@ -160,7 +160,7 @@ from typing import ClassVar
 class Entidad:
     _contador_global: ClassVar[int] = 0  # compartido por todas las instancias
 
-# Ejemplo en Coches2026
+# Ejemplo en ClinicaVeterinaria
 class Coche(ABC):
     __km_por_marca: ClassVar[dict[str, float]] = {}
 ```
@@ -180,7 +180,7 @@ class EntidadBase(ABC):
     @abstractmethod
     def ejecutar(self, cantidad: float) -> Resultado: ...
 
-# Ejemplo en Coches2026: Coche es abstracta, avanzar() es abstractmethod
+# Ejemplo en ClinicaVeterinaria: Coche es abstracta, avanzar() es abstractmethod
 ```
 
 ## Herencia múltiple
@@ -188,7 +188,7 @@ class EntidadBase(ABC):
 Si el proyecto requiere herencia múltiple, documentar el MRO elegido con un comentario:
 
 ```python
-# Ejemplo en Coches2026
+# Ejemplo en ClinicaVeterinaria
 # MRO: CocheHibrido → CocheElectrico → CocheCombustion → Coche
 class CocheHibrido(CocheElectrico, CocheCombustion):
     ...

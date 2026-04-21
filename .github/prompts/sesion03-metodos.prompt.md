@@ -1,13 +1,115 @@
 ---
 mode: 'agent'
-description: 'Sesión 3 — Añadir métodos de instancia y de clase a las entidades'
+description: 'Sesión 3 — Crear Resultado, añadir métodos de instancia y de clase a las entidades'
 ---
 
 # CONTEXTO DE LA SESIÓN ACTUAL
 Estamos en la **Sesión 3** de la asignatura.
-El objetivo de hoy es enriquecer el diagrama de clases y el código con **métodos de instancia y de clase**.
+El objetivo de hoy es dos cosas:
+1. Crear `Resultado` — la clase de comunicación entre capas — y explicar su motivación.
+2. Enriquecer las entidades con **métodos de instancia y de clase** que usen `Resultado`.
 
 > 🔄 **Antes de empezar**: `git pull origin main` para tener el código actualizado.
+
+---
+
+# FASE 0 — CREAR `Resultado` (responsabilidad exclusiva del agente)
+
+Antes de añadir ningún método, el agente explica al alumno por qué se necesita esta clase
+y la crea íntegramente. El alumno **no la implementa** — solo la comprende.
+
+## Paso 0.1 — El agente explica la motivación
+
+> *"Fijaos en que nuestras entidades van a tener operaciones que pueden salir bien o mal.
+> Por ejemplo, 'registrar un animal' puede fallar si el nombre está vacío; 'añadir una
+> afección' puede fallar si ya existe.*
+>
+> *¿Cómo comunicamos ese fallo al servicio, y el servicio a la UI?*
+>
+> *Una opción sería lanzar una excepción. Pero las excepciones están pensadas para
+> situaciones inesperadas — bugs, fallos de red, errores de programación. Que un nombre
+> esté vacío no es un bug: es un caso de uso normal que hay que tratar con lógica ordinaria.*
+>
+> *Otra opción sería devolver `None` o un booleano. Pero entonces perdemos el mensaje
+> de error: ¿cómo sabe la UI qué decirle al usuario?*
+>
+> *La solución es una clase auxiliar — no pertenece al dominio del negocio, sino a la
+> infraestructura de comunicación entre capas — que envuelve el resultado de cualquier
+> operación: si fue bien (`ok=True`) con el dato o mensaje de retorno, o si fue mal
+> (`ok=False`) con el motivo del error y un código identificador.*
+>
+> *Esta clase se llama `Resultado`. No representa ningún concepto de vuestro dominio
+> — es una convención técnica que usaréis en absolutamente todos los métodos de negocio
+> del proyecto. La creo yo ahora para que podáis concentraros en implementar los métodos."*
+
+Preguntar al alumno si ha entendido la motivación antes de continuar:
+
+> *"¿Tiene sentido por qué usamos `Resultado` en lugar de lanzar excepciones o devolver None?
+> ¿Tenéis alguna duda antes de ver el código?"*
+
+## Paso 0.2 — El agente crea `src/entities/resultado.py`
+
+```python
+class Resultado:
+    """Envuelve el resultado de cualquier operación que puede fallar.
+
+    No es una clase de dominio: es una utilidad de comunicación entre capas.
+    Toda operación de negocio que puede fallar debe devolver Resultado
+    en lugar de lanzar una excepción o devolver None.
+
+    Uso:
+        return Resultado.exito("Operación completada")
+        return Resultado.error("El nombre no puede estar vacío", "NOMBRE_VACIO")
+    """
+
+    def __init__(self, ok, mensaje, codigo=None, valor=None):
+        self.ok = ok
+        self.mensaje = mensaje
+        self.codigo = codigo   # código corto para identificar el tipo de error
+        self.valor = valor     # dato de retorno opcional en caso de éxito
+
+    @classmethod
+    def exito(cls, mensaje, valor=None):
+        """Crea un Resultado de éxito con mensaje y dato de retorno opcional."""
+        return cls(True, mensaje, valor=valor)
+
+    @classmethod
+    def error(cls, mensaje, codigo=None):
+        """Crea un Resultado de error con mensaje y código identificador."""
+        return cls(False, mensaje, codigo=codigo)
+```
+
+Tras crearla, mostrar al alumno un ejemplo de uso adaptado a su dominio concreto:
+
+```python
+# En una entidad (ejemplo adaptado al dominio del alumno):
+def anadir_afeccion(self, afeccion):
+    if not afeccion:
+        return Resultado.error("La afección no puede estar vacía", "AFECCION_VACIA")
+    if afeccion in self.__afecciones:
+        return Resultado.error("La afección ya existe", "AFECCION_DUPLICADA")
+    self.__afecciones.append(afeccion)
+    return Resultado.exito(f"Afección '{afeccion}' añadida")
+
+# En la UI (adelanto de cómo se usará):
+resultado = servicio.anadir_afeccion(animal, "diabetes")
+if resultado.ok:
+    print(f"✅ {resultado.mensaje}")
+else:
+    print(f"❌ {resultado.mensaje}")
+```
+
+Aplicar la plantilla de verificación:
+
+```
+🔍 Acabo de crear src/entities/resultado.py.
+   Por favor, ábrelo y comprueba que:
+   - Existen los métodos de clase Resultado.exito y Resultado.error.
+   - Los atributos ok, mensaje, codigo y valor son públicos (sin guiones).
+   ¿Tiene sentido la clase? ¿Alguna duda antes de usarla en los métodos?
+```
+
+---
 
 # TAREAS DE HOY (WORKFLOW)
 
@@ -40,6 +142,7 @@ Muestra un método de instancia de la clase principal como ejemplo. Luego pide a
 - [ ] Commits del día con patrón `sesion03: descripción corta`
 
 ## Quality gates específicos de esta sesión
+- [ ] `src/entities/resultado.py` creado por el agente con `Resultado.exito` y `Resultado.error`, y el alumno ha confirmado que entiende su propósito
 - [ ] Cada entidad tiene al menos un método de instancia que implementa una operación del dominio
 - [ ] Toda operación que puede fallar devuelve `Resultado` (ninguna lanza excepción al exterior)
 - [ ] Ningún método en `entities/` contiene `print()` ni `input()`: `grep -rn "print\|input" entities/`

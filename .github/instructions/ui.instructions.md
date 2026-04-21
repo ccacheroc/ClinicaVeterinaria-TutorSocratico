@@ -31,7 +31,7 @@ from entities.mi_entidad import MiEntidad   # PROHIBIDO
 obj = MiEntidad(identificador)
 ```
 
-> **Ejemplo en Coches2026**: `ui/menu.py` llama a `GestionConcesionarioService.registrar_coche()`
+> **Ejemplo en ClinicaVeterinaria**: `ui/menu.py` llama a `GestionConcesionarioService.registrar_coche()`
 > y nunca importa `CocheCombustion` ni `Persona` directamente.
 
 ## Estructura del menú

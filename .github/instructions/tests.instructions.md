@@ -19,7 +19,7 @@ Cada fichero de test corresponde a un módulo concreto del proyecto.
 | `tests/test_seed_data_service.py` | Servicio de seed de datos |
 | `tests/test_ui_menu.py` | Capa UI (con servicios mockeados) |
 
-> **Ejemplo en Coches2026**: `test_gestion_concesionario_service.py`, `test_gestion_personas_service.py`.
+> **Ejemplo en ClinicaVeterinaria**: `test_gestion_concesionario_service.py`, `test_gestion_personas_service.py`.
 
 ## Estructura obligatoria de cada test
 
@@ -71,7 +71,7 @@ def test_menu_registrar_entidad_exitoso():
             assert "Entidad registrada" in salidas
 ```
 
-> **Ejemplo en Coches2026**: `test_menu_alta_cliente_exitosa()` en `test_ui_menu.py`.
+> **Ejemplo en ClinicaVeterinaria**: `test_menu_alta_cliente_exitosa()` en `test_ui_menu.py`.
 
 ## Ejecución
 
@@ -91,7 +91,7 @@ test_entidad_ejecutar_sin_recursos_devuelve_error
 test_servicio_registrar_identificador_duplicado_devuelve_error
 test_menu_listar_llama_al_servicio
 
-# Ejemplo en Coches2026
+# Ejemplo en ClinicaVeterinaria
 test_coche_combustion_avanzar_sin_gasolina_devuelve_error
 test_concesionario_anadir_cliente_dni_duplicado_devuelve_error
 ```

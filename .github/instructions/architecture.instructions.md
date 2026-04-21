@@ -42,7 +42,7 @@ def realizar_operacion(self, valor: float) -> None:
     raise ValueError("valor inválido")
 ```
 
-> **Ejemplo en Coches2026**: `Coche.avanzar(km)` devuelve `Resultado.error("SIN_COMBUSTIBLE")` en lugar de lanzar una excepción cuando no hay energía.
+> **Ejemplo en ClinicaVeterinaria**: `Coche.avanzar(km)` devuelve `Resultado.error("SIN_COMBUSTIBLE")` en lugar de lanzar una excepción cuando no hay energía.
 
 ## Seed de datos
 

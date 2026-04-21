@@ -39,7 +39,7 @@ class GestionEntidadService:
         ...
 ```
 
-> **Ejemplo en Coches2026**: `GestionConcesionarioService.registrar_coche(matricula, marca, tipo)`.
+> **Ejemplo en ClinicaVeterinaria**: `GestionConcesionarioService.registrar_coche(matricula, marca, tipo)`.
 
 ## Gestión de excepciones
 

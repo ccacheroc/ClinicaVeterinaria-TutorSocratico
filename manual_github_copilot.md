@@ -1,6 +1,6 @@
 # Manual de GitHub Copilot — Guía completa de uso
 
-> Documento de referencia generado a partir de la configuración real del proyecto **Coches2026**.
+> Documento de referencia generado a partir de la configuración real del proyecto **ClinicaVeterinaria**.
 > Cubre desde los conceptos básicos hasta la organización avanzada de contexto para agentes de IA.
 
 ---
@@ -16,7 +16,7 @@
 7. [Prompt files — invocación manual](#7-prompt-files--invocación-manual)
 8. [AGENTS.md vs copilot-instructions.md](#8-agentsmd-vs-copilot-instructionsmd)
 9. [MCP — ampliar las herramientas del agente](#9-mcp--ampliar-las-herramientas-del-agente)
-10. [Configuración real de este proyecto (Coches2026)](#10-configuración-real-de-este-proyecto-coches2026)
+10. [Configuración real de este proyecto (ClinicaVeterinaria)](#10-configuración-real-de-este-proyecto-clinicaveterinaria)
 11. [Recetas de uso habitual](#11-recetas-de-uso-habitual)
 
 ---
@@ -412,7 +412,7 @@ applyTo: 'Dockerfile'
 description: 'Convenciones Docker para este proyecto'
 ---
 
-# Reglas Docker — Coches2026
+# Reglas Docker — ClinicaVeterinaria
 - Usar siempre imagen base `python:3.12-slim` (no `latest`).
 - Builds multi-stage obligatorios para reducir tamaño final.
 - El proceso no debe correr como root; usar usuario `appuser`.
@@ -629,7 +629,7 @@ Se define en `.vscode/mcp.json` o en la configuración de usuario de VS Code:
 
 ---
 
-## 10. Configuración real de este proyecto (Coches2026)
+## 10. Configuración real de este proyecto (ClinicaVeterinaria)
 
 ### Estructura completa de `.github/`
 
