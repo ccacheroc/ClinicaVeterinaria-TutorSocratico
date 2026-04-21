@@ -566,19 +566,49 @@ Cuando el alumno indique que ha terminado, el agente realiza una **revisión té
 
 ---
 
-## 6.1 — Completitud del dominio
+## 6.1 — Completitud del dominio y sincronía con README.md
 
-El agente comprueba que todas las entidades y relaciones acordadas en la Fase 1 están implementadas:
+El agente comprueba en **dos pasos** que el código y el diagrama son consistentes entre sí.
 
-- ¿Existe un fichero `.py` en `src/entities/` por cada clase identificada en el diagrama?
+### 6.1a — Verificar que el código está completo
+
+- ¿Existe un fichero `.py` en `src/entities/` por cada clase identificada en la Fase 1?
 - ¿Cada clase tiene todos los atributos de instancia acordados con el alumno?
-- ¿Los atributos de clase identificados en la Fase 1 están presentes a nivel de clase (fuera del `__init__`)?
+- ¿Los atributos de clase están presentes a nivel de clase (fuera del `__init__`)?
 - ¿Las relaciones entre clases se reflejan en los `__init__`? Por ejemplo:
   - Si `Animal` tiene un `Dueno`, ¿hay `self.__dueno` en `Animal.__init__`?
-  - Si `Animal` tiene una lista de `Visita`, ¿hay `self.__visitas = []` en `Animal.__init__`?
-- ¿El diagrama Mermaid en `README.md` refleja fielmente el código final (incluidas las clases añadidas durante la sesión)?
+  - Si `Visita` tiene un `Animal`, ¿hay `self.__animal` en `Visita.__init__`?
 
 Si falta alguna entidad, atributo o relación, el agente lo crea directamente y aplica la plantilla de verificación.
+
+### 6.1b — Verificar que el diagrama Mermaid en README.md refleja el código real
+
+El agente compara clase a clase el diagrama con el código fuente y comprueba:
+
+**Por cada clase:**
+- ¿Aparece en el diagrama con el nombre exacto en PascalCase?
+- ¿Todos los atributos de instancia privados del `__init__` están en el diagrama con `-`?
+- ¿Los atributos de clase están en el diagrama con `+` y el símbolo `$`?
+- ¿No aparecen atributos en el diagrama que ya no existen en el código?
+
+**Relaciones:**
+- ¿Todas las referencias entre clases (parámetros del `__init__` que son otras entidades) tienen su flecha correspondiente?
+- ¿Las cardinalidades (`"1"`, `"many"`) son correctas?
+- ¿Se usan los tipos de flecha correctos según `mermaid.instructions.md`?
+  - `-->` para referencia simple
+  - `*--` para composición fuerte (el hijo no existe sin el padre)
+  - `o--` para agregación débil (el hijo puede existir sin el padre)
+
+**Clases que NO deben aparecer todavía:**
+- `Resultado` — no se crea hasta la Sesión 3. Si aparece en el diagrama, eliminarla.
+
+Si hay cualquier discrepancia, el agente actualiza `README.md` directamente para sincronizarlo con el código, aplica la plantilla de verificación y hace commit:
+
+```bash
+git add README.md
+git commit -m "sesion02: sincronizar diagrama README con código final"
+git push origin main
+```
 
 ---
 
@@ -698,7 +728,8 @@ Antes de cerrar la sesión, verifica que se cumplen **todos** los criterios:
 - [ ] El alumno ha confirmado que entiende **por qué** existe la capa de servicios antes de implementarlos
 - [ ] El agente ha creado el esqueleto de `src/main.py`; el alumno lo ha completado en modo Ask — con commit
 - [ ] `src/main.py` importa solo servicios (no entidades directamente) y arranca sin errores
-- [ ] **Revisión final completada** (Fase 6): completitud del dominio, convenciones Python, arquitectura y cobertura de tests — sin puntos en rojo pendientes
+- [ ] **Revisión final completada** (Fase 6): completitud del dominio, sincronía README/diagrama, convenciones Python, arquitectura y cobertura de tests — sin puntos en rojo pendientes
+- [ ] El diagrama Mermaid en `README.md` refleja exactamente el código final: mismos atributos, mismos nombres, mismas relaciones, sin clases que no existan todavía (`Resultado`) — con commit si se actualizó
 
 ---
 
