@@ -1,7 +1,8 @@
-# Clínica Veterinaria
+# Gestión de Aulas
 
-Aplicación de consola en Python para gestionar una clínica veterinaria.
-Permite registrar dueños, animales y veterinarios, y llevar el historial de visitas asociadas a cada mascota con el servicio realizado.
+Aplicación de consola en Python para gestionar la reserva de aulas en una escuela.
+Permite registrar aulas y profesores, y gestionar las reservas de aulas por franja horaria,
+garantizando que no se solapen dos reservas sobre el mismo aula.
 
 Arquitectura de cuatro capas: `ui → services → entities → persistence`.
 
@@ -11,51 +12,33 @@ Arquitectura de cuatro capas: `ui → services → entities → persistence`.
 
 ```mermaid
 classDiagram
-    class Animal {
-        -str __nombre
-        -str __fecha_nacimiento
-        -str __tipo
-        -str __raza
-        -str __color
-        -list __afecciones
-        -Dueno __dueno
-        +contador_por_tipo$
-    }
-    class Dueno {
-        -str __nif
-        -str __nombre
-        -str __email
-        -str __tfno
-        -list __lista_animales
-    }
-    class Veterinario {
-        -str __nif
-        -str __nombre
-        -str __email
-        -str __tfno
-        -list __esp_clinicas
-        -list __tipos_animales
-        +especialidades_clinicas$
-        +tipos_animales_atendidos$
-    }
-    class Visita {
-        -str __fecha
-        -Servicio __servicio
-        -Animal __animal
-        -Veterinario __veterinario
-        -bool __pagada
-    }
-    class Servicio {
-        -str __codigo
+    class Aula {
+        +list tipos_validos$
+        -str __identificador
         -str __nombre
         -str __descripcion
-        -float __precio
-        -str __duracion_estimada
+        -int __capacidad
+        -str __tipo
+        -list __reservas
+    }
+    class Profesor {
+        -str __nif
+        -str __nombre
+        -str __departamento
+        -str __email
+        -list __reservas
+    }
+    class Reserva {
+        -str __fecha
+        -str __hora_inicio
+        -str __hora_fin
+        -str __motivo
+        -Aula __aula
+        -Profesor __profesor
     }
 
-    Animal "many" --> "1" Dueno : pertenece a
-    Dueno "1" o-- "many" Animal : tiene
-    Animal "1" *-- "many" Visita : tiene historial
-    Visita --> "1" Servicio : realiza
-    Visita --> "1" Veterinario : atendida por
+    Aula "1" o-- "many" Reserva : tiene
+    Profesor "1" o-- "many" Reserva : realiza
+    Reserva "many" --> "1" Aula : reserva
+    Reserva "many" --> "1" Profesor : realizada por
 ```
